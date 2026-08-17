@@ -61,15 +61,15 @@ pnpm --filter @learn-dsh/s01-min-loop dev
 - 把 `maxSteps` 传成 `1`，看保险丝怎么断（测试 `agent.test.ts` 第三条
   用例演示的正是这个行为）。
 
-## 看真码（进阶造读）
+## 看真码（进阶导读）
 
 如果你已经写过 tool-use 循环，直接看 dsh 在这一层多做了什么：
 
-- [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/main/packages/core/agent-loop)
+- [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop)
   的 `agent.ts`：本课的循环在那里被拆成 `turn/*` 与 `step/*` 事件，每步
   请求前有 `agent/pre-step` 瀑布可以改写或拒绝本次输入，模型流式响应
   逐块落为 `assistant/chunk` 会话事件；
-- [docs/architecture.md 的 Turn flow 一节](https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/architecture.md#turn-flow)：
+- [docs/architecture.md 的 Turn flow 一节](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow)：
   完整事件序列图；
 - 本课验证版本：`0.1.0-rc.5`（见 `lesson.yaml` 的 `verifiedDshVersion`）。
 

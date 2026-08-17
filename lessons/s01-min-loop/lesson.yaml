@@ -7,7 +7,7 @@ lines: 0
 tools: 0
 dsh:
   - label: packages/core/agent-loop
-    url: https://github.com/deepseek-ai/deepseek-harness/tree/main/packages/core/agent-loop
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop
   - label: docs/architecture.md（Turn flow 一节）
-    url: https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/architecture.md#turn-flow
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
 verifiedDshVersion: 0.1.0-rc.5
