@@ -16,7 +16,7 @@
 - 所有测试与示例不依赖 `DEEPSEEK_API_KEY`（mock 模型回放）。
 - 课程包运行时零第三方依赖；仓库级工具链只在 root devDependencies（tsx、vitest、yaml、@types/node）。
 - 课程内容纯中文，专业术语保留英文（如 capability seam、turn、step）。
-- dsh 源码链接统一指向 `https://github.com/deepseek-ai/deepseek-harness`（main 分支），并在 lesson.yaml 的 `verifiedDshVersion` 标注验证过的版本；当前为 `0.1.0-rc.5`。
+- dsh 源码链接统一指向 `https://github.com/deepseek-ai/deepseek-harness`（master 分支——上游默认分支，无 main），并在 lesson.yaml 的 `verifiedDshVersion` 标注验证过的版本；当前为 `0.1.0-rc.5`。
 - 文件以恰好一个换行符结尾。
 - 依赖版本以本计划核验过的为准：vitepress `^1.6.4`、vitest `^4.1.10`、tsx `^4.23.12`、yaml `^2.9.0`、@types/node `^24.3.0`。
 - 仓库名与 GitHub 地址：`Lotus-7/learn-deepseek-harness`（本地路径 `/Users/lotus-7/Documents/GitHub/learn-deepseek-harness`）。
@@ -547,9 +547,9 @@ lines: 0
 tools: 0
 dsh:
   - label: packages/core/agent-loop
-    url: https://github.com/deepseek-ai/deepseek-harness/tree/main/packages/core/agent-loop
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop
   - label: docs/architecture.md（Turn flow 一节）
-    url: https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/architecture.md#turn-flow
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
 verifiedDshVersion: 0.1.0-rc.5
 ```
 
@@ -627,11 +627,11 @@ pnpm --filter @learn-dsh/s01-min-loop dev
 
 如果你已经写过 tool-use 循环，直接看 dsh 在这一层多做了什么：
 
-- [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/main/packages/core/agent-loop)
+- [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop)
   的 `agent.ts`：本课的循环在那里被拆成 `turn/*` 与 `step/*` 事件，每步
   请求前有 `agent/pre-step` 瀑布可以改写或拒绝本次输入，模型流式响应
   逐块落为 `assistant/chunk` 会话事件；
-- [docs/architecture.md 的 Turn flow 一节](https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/architecture.md#turn-flow)：
+- [docs/architecture.md 的 Turn flow 一节](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow)：
   完整事件序列图；
 - 本课验证版本：`0.1.0-rc.5`（见 `lesson.yaml` 的 `verifiedDshVersion`）。
 
@@ -1116,7 +1116,7 @@ pnpm --filter @learn-dsh/s01-min-loop dev
 ```markdown
 # 术语表
 
-中文正文保留英文术语，本表对齐 [dsh 的 glossary](https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/glossary.md)（验证版本 0.1.0-rc.5）。
+中文正文保留英文术语，本表对齐 [dsh 的 glossary](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)（验证版本 0.1.0-rc.5）。
 
 | 术语 | 中文 | 一句话解释 |
 |---|---|---|
