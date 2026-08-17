@@ -623,7 +623,7 @@ pnpm --filter @learn-dsh/s01-min-loop dev
 - 把 `maxSteps` 传成 `1`，看保险丝怎么断（测试 `agent.test.ts` 第三条
   用例演示的正是这个行为）。
 
-## 看真码（进阶造读）
+## 看真码（进阶导读）
 
 如果你已经写过 tool-use 循环，直接看 dsh 在这一层多做了什么：
 
