@@ -667,7 +667,7 @@ git commit -m "docs(s01): 课程文稿与元数据"
 **Interfaces:**
 - Consumes: Task 4 定义的 `lesson.yaml` 字段与目录名约定。
 - Produces:
-  - `pnpm run sync` 一次完成两件事：① 把 `lines`（src 下非 `*.test.ts` 的 `.ts` 文件非空行数）与 `tools`（`defineTool(` 出现次数）写回每个 `lessons/<dir>/lesson.yaml`（保留注释与字段顺序）；② 把每个 README.md 投影为 `site/lessons/<dir>/index.md`（生成 frontmatter：title 取 lesson.yaml，description 取 idea），并汇总写 `site/lessons-meta.json`
+  - `pnpm run sync` 一次完成两件事：① 把 `lines`（src 下非 `*.test.ts` 的 `.ts` 文件非空行数）与 `tools`（`= defineTool(` 出现次数，排除函数声明行）写回每个 `lessons/<dir>/lesson.yaml`（保留注释与字段顺序）；② 把每个 README.md 投影为 `site/lessons/<dir>/index.md`（生成 frontmatter：title 取 lesson.yaml，description 取 idea），并汇总写 `site/lessons-meta.json`
   - `lessons-meta.json` 为数组，元素字段：`id: string`、`stage: number`、`title: string`、`idea: string`、`lines: number`、`tools: number`、`dsh: { label: string; url: string }[]`、`verifiedDshVersion: string`、`href: string`（如 `/lessons/s01-min-loop/`），按 `id` 升序——Task 6 的 Timeline.vue 按此消费
 
 - [ ] **Step 1: 写失败测试**
@@ -693,11 +693,11 @@ describe('countLines / countTools', () => {
     expect(await countLines([join(dir, 'src', 'a.ts'), join(dir, 'src', 'a.test.ts')])).toBe(2)
   })
 
-  it('数 defineTool 的出现次数', () => {
+  it('数 defineTool 的调用次数，排除函数声明行', () => {
     const dir = join(root, 'fixture2')
     mkdirSync(dir, { recursive: true })
     const file = join(dir, 'tools.ts')
-    writeFileSync(file, 'defineTool({})\ndefineTool({})\n')
+    writeFileSync(file, 'export function defineTool(t) { return t }\nconst a = defineTool({})\nconst b = defineTool({})\n')
     expect(countTools([file])).toBe(2)
   })
 })
@@ -724,7 +724,7 @@ describe('syncLessons', () => {
       ].join('\n'),
     )
     writeFileSync(join(lessonDir, 'README.md'), '# 最小循环\n\n正文。\n')
-    writeFileSync(join(lessonDir, 'src', 'main.ts'), 'defineTool({})\n\nconst x = 1\n')
+    writeFileSync(join(lessonDir, 'src', 'main.ts'), 'const t = defineTool({})\n\nconst x = 1\n')
 
     await syncLessons(root)
 
@@ -773,10 +773,10 @@ export async function countLines(files: string[]): Promise<number> {
   return lines
 }
 
-/** 数 files 里 defineTool( 出现次数（课程定义工具的统一约定）。 */
+/** 数 files 里 = defineTool( 出现次数（只数调用赋值，排除函数声明行——课程定义工具的统一约定）。 */
 export function countTools(files: string[]): number {
   return files.reduce(
-    (n, file) => n + (readFileSync(file, 'utf8').match(/defineTool\(/g)?.length ?? 0),
+    (n, file) => n + (readFileSync(file, 'utf8').match(/= defineTool\(/g)?.length ?? 0),
     0,
   )
 }
