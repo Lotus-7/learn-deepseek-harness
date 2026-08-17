@@ -1,0 +1,6 @@
+packages:
+  - lessons/*
+  - lessons/shared/*
+  - site
+allowBuilds:
+  esbuild: true
