@@ -1,0 +1,24 @@
+name: ci
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run sync
+      - name: 元数据必须与代码同步（防止手抄统计值漂移）
+        run: git diff --exit-code
+      - run: pnpm test
+      - run: pnpm run site:build
