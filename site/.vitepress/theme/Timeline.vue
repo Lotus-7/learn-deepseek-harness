@@ -13,6 +13,10 @@ interface LessonMeta {
   href: string
 }
 
+// lessons-meta.json 里的 href 是站内根绝对路径；Vue 模板不会自动加 VitePress base，子路径部署时必须手动拼。
+// 用 Vite 的 BASE_URL（构建期内联）：useData().base 在 SSR 构建阶段是 undefined，会炸掉整页渲染。
+const withBase = (href: string): string => import.meta.env.BASE_URL.replace(/\/$/, '') + href
+
 const stages: { id: number; name: string; note: string }[] = [
   { id: 1, name: '阶段一 · 最小循环', note: '纯手写，零框架' },
   { id: 2, name: '阶段二 · 可控与可恢复', note: '权限、恢复、压缩' },
@@ -36,7 +40,7 @@ const maxLines = Math.max(...(lessons as LessonMeta[]).map((l) => l.lines), 1)
     <div class="cards">
       <div v-for="lesson in byStage(stage.id)" :key="lesson.id" class="card">
         <div class="card-head">
-          <a :href="lesson.href" class="card-link">
+          <a :href="withBase(lesson.href)" class="card-link">
             <span class="id">{{ lesson.id }}</span>
             <span class="title">{{ lesson.title }}</span>
           </a>

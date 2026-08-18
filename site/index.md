@@ -10,7 +10,7 @@ hero:
       link: /lessons/s01-min-loop/
     - theme: alt
       text: 看时间线
-      link: /timeline/
+      link: /timeline
     - theme: alt
       text: GitHub
       link: https://github.com/Lotus-7/learn-deepseek-harness

@@ -5,13 +5,15 @@ export default defineConfig({
   title: 'Learn DeepSeek Harness',
   description:
     '从最小循环到生产级 agent harness：概念演进 + 可运行示例 + deepseek-harness 源码导读',
+  // GitHub Pages 项目页挂在子路径下；缺 base 会生成根绝对资产/链接 URL，线上全部 404。
+  base: '/learn-deepseek-harness/',
   cleanUrls: true,
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
-      { text: '时间线', link: '/timeline/' },
-      { text: '术语表', link: '/glossary/' },
-      { text: '关于', link: '/about/' },
+      { text: '时间线', link: '/timeline' },
+      { text: '术语表', link: '/glossary' },
+      { text: '关于', link: '/about' },
       {
         text: 'GitHub',
         link: 'https://github.com/Lotus-7/learn-deepseek-harness',
