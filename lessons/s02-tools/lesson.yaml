@@ -1,0 +1,17 @@
+id: s02
+stage: 1
+slug: tools
+title: 工具：schema + 注册表 + 守卫执行管线
+idea: 工具执行走「校验 → 守卫 → 执行 → 留痕」管线，失败也回喂模型
+lines: 332
+tools: 3
+dsh:
+  - label: packages/core/tools
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/tools
+  - label: docs/architecture.md（Turn flow 一节）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
+  - label: docs/tool-execution-pipeline.md
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-execution-pipeline.md
+  - label: docs/cookbook/adding-a-tool.md
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md
+verifiedDshVersion: 0.1.0-rc.5
