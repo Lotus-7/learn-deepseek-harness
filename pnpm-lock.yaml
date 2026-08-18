@@ -45,6 +45,12 @@ importers:
         specifier: workspace:*
         version: link:../shared/mock-model
 
+  lessons/s05-recovery:
+    dependencies:
+      '@learn-dsh/mock-model':
+        specifier: workspace:*
+        version: link:../shared/mock-model
+
   lessons/shared/mock-model: {}
 
   site:
