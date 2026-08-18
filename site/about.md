@@ -29,6 +29,7 @@ dsh 处于 pre-release，会自由重命名与重排包。每课 `lesson.yaml` �
 
 ## 本站仓库
 
-[learn-deepseek-harness](https://github.com/Lotus-7/learn-deepseek-harness)。
+在线阅读：https://lotus-7.github.io/learn-deepseek-harness/
+仓库：[learn-deepseek-harness](https://github.com/Lotus-7/learn-deepseek-harness)。
 课程文稿与代码同目录（`lessons/<课>/`），站点页面由 `pnpm run sync`
 从文稿投影生成，不重复维护。

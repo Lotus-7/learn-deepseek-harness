@@ -3,7 +3,7 @@
 从最小循环到生产级 agent harness 的学习课程：概念演进 + 可运行示例 +
 [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) 真实源码导读。
 
-在线阅读：GitHub Pages（见 About）；课程时间线从 [s01 最小循环](lessons/s01-min-loop/README.md) 开始。
+在线阅读：https://lotus-7.github.io/learn-deepseek-harness/ ；课程时间线从 [s01 最小循环](lessons/s01-min-loop/README.md) 开始。
 
 ## 快速开始
 
