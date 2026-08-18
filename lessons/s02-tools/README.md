@@ -84,7 +84,8 @@ pnpm --filter @learn-dsh/s02-tools dev
 - [packages/core/tools/src/index.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/src/index.ts)
   的 `ToolRuntime`：本课「注册表 + 管线」的生产版合体。注册表是 **scoped** 的——全局一层
   加每个 agent scope 一层，scoped 注册 shadow 全局同名工具，`restrict()` 还能按 scope 过滤
-  可见集合（本课是一张平表）。执行暴露为四个 `tools/*` 瀑布事件：`tools/pre-execute`
+  可见集合（本课是一张平表）。执行暴露为四个 `tools/*` 事件——前三个是瀑布，`tools/result`
+  是同步观察（emit，只读）：`tools/pre-execute`
   （allow/deny/ask；ask 走审批服务，没有审批通道就降级为 deny）、`tools/execute`
   （around 包装，超时/重试/指标挂这里）、`tools/post-execute`（accept/block/替换内容/
   附加上下文）、`tools/result`（观察冻结的最终结果）；另有 `ctx.tools.guard()` 注册

@@ -91,6 +91,28 @@ describe('runLoop', () => {
       tool_call_id: 'call_3',
     })
   })
+
+  it('arguments 是合法 JSON 但根不是对象时，校验失败回喂而非崩溃', async () => {
+    // toolCall 只序列化对象参数；标量根（合法 JSON、非对象）剧本需覆写 arguments
+    const scalarRoot: ModelResponse[] = [
+      {
+        message: {
+          role: 'assistant',
+          content: null,
+          tool_calls: [{ ...toolCall('call_1', 'add', {}), function: { name: 'add', arguments: '"5"' } }],
+        },
+        finishReason: 'tool_calls',
+      },
+      { message: { role: 'assistant', content: '换成对象参数重试。' }, finishReason: 'stop' },
+    ]
+    const model = createMockModel(scalarRoot)
+    await runLoop(model, demoRegistry(), '帮我算 2 + 3')
+    expect(model.calls[1]).toContainEqual({
+      role: 'tool',
+      content: '参数校验失败：arguments 根必须是 JSON 对象，实际是 string（"5"）',
+      tool_call_id: 'call_1',
+    })
+  })
 })
 
 describe('runLoop × 会话日志', () => {

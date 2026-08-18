@@ -97,7 +97,7 @@ function finish(
 /**
  * 守卫执行管线，替代 s01 的「find 到就 execute」：
  * ① 参数校验（required + type）② preExecute 守卫（可否决）③ execute ④ postExecute 留痕。
- * 四种失败——未知名、参数不是合法 JSON、校验不过、守卫否决——都不是进程崩溃：
+ * 四种失败——未知名、参数不是合法 JSON（含根不是对象）、校验不过、守卫否决——都不是进程崩溃：
  * 它们成为 role:'tool' 的结果消息回喂模型，模型看得见、可修正重试。
  * dsh 对应 ToolRuntime.execute 的 pre-execute → execute → post-execute 管线
  * （packages/core/tools/src/index.ts）。
@@ -125,6 +125,9 @@ export async function executeToolCall(
     args = JSON.parse(call.function.arguments) as Record<string, unknown>
   } catch (error) {
     return finish(name, {}, `参数校验失败：arguments 不是合法 JSON（${(error as Error).message}）`, true, hooks)
+  }
+  if (typeof args !== 'object' || args === null || Array.isArray(args)) {
+    return finish(name, {}, `参数校验失败：arguments 根必须是 JSON 对象，实际是 ${describeType(args)}`, true, hooks)
   }
 
   const violations = validateArguments(tool.parameters, args)
