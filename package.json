@@ -1,0 +1,20 @@
+{
+  "name": "learn-deepseek-harness",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "packageManager": "pnpm@11.1.0",
+  "scripts": {
+    "sync": "tsx scripts/sync-lessons.ts",
+    "test": "vitest run",
+    "site:dev": "pnpm run sync && pnpm --filter @learn-dsh/site dev",
+    "site:build": "pnpm run sync && pnpm --filter @learn-dsh/site build",
+    "site:preview": "pnpm --filter @learn-dsh/site preview"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsx": "^4.23.12",
+    "vitest": "^4.1.10",
+    "yaml": "^2.9.0"
+  }
+}

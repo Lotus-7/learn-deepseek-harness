@@ -16,7 +16,7 @@
 - 所有测试与示例不依赖 `DEEPSEEK_API_KEY`（mock 模型回放）。
 - 课程包运行时零第三方依赖；仓库级工具链只在 root devDependencies（tsx、vitest、yaml、@types/node）。
 - 课程内容纯中文，专业术语保留英文（如 capability seam、turn、step）。
-- dsh 源码链接统一指向 `https://github.com/deepseek-ai/deepseek-harness`（main 分支），并在 lesson.yaml 的 `verifiedDshVersion` 标注验证过的版本；当前为 `0.1.0-rc.5`。
+- dsh 源码链接统一指向 `https://github.com/deepseek-ai/deepseek-harness`（master 分支——上游默认分支，无 main），并在 lesson.yaml 的 `verifiedDshVersion` 标注验证过的版本；当前为 `0.1.0-rc.5`。
 - 文件以恰好一个换行符结尾。
 - 依赖版本以本计划核验过的为准：vitepress `^1.6.4`、vitest `^4.1.10`、tsx `^4.23.12`、yaml `^2.9.0`、@types/node `^24.3.0`。
 - 仓库名与 GitHub 地址：`Lotus-7/learn-deepseek-harness`（本地路径 `/Users/lotus-7/Documents/GitHub/learn-deepseek-harness`）。
@@ -547,9 +547,9 @@ lines: 0
 tools: 0
 dsh:
   - label: packages/core/agent-loop
-    url: https://github.com/deepseek-ai/deepseek-harness/tree/main/packages/core/agent-loop
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop
   - label: docs/architecture.md（Turn flow 一节）
-    url: https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/architecture.md#turn-flow
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
 verifiedDshVersion: 0.1.0-rc.5
 ```
 
@@ -623,15 +623,15 @@ pnpm --filter @learn-dsh/s01-min-loop dev
 - 把 `maxSteps` 传成 `1`，看保险丝怎么断（测试 `agent.test.ts` 第三条
   用例演示的正是这个行为）。
 
-## 看真码（进阶造读）
+## 看真码（进阶导读）
 
 如果你已经写过 tool-use 循环，直接看 dsh 在这一层多做了什么：
 
-- [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/main/packages/core/agent-loop)
+- [packages/core/agent-loop](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop)
   的 `agent.ts`：本课的循环在那里被拆成 `turn/*` 与 `step/*` 事件，每步
   请求前有 `agent/pre-step` 瀑布可以改写或拒绝本次输入，模型流式响应
   逐块落为 `assistant/chunk` 会话事件；
-- [docs/architecture.md 的 Turn flow 一节](https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/architecture.md#turn-flow)：
+- [docs/architecture.md 的 Turn flow 一节](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow)：
   完整事件序列图；
 - 本课验证版本：`0.1.0-rc.5`（见 `lesson.yaml` 的 `verifiedDshVersion`）。
 
@@ -667,7 +667,7 @@ git commit -m "docs(s01): 课程文稿与元数据"
 **Interfaces:**
 - Consumes: Task 4 定义的 `lesson.yaml` 字段与目录名约定。
 - Produces:
-  - `pnpm run sync` 一次完成两件事：① 把 `lines`（src 下非 `*.test.ts` 的 `.ts` 文件非空行数）与 `tools`（`defineTool(` 出现次数）写回每个 `lessons/<dir>/lesson.yaml`（保留注释与字段顺序）；② 把每个 README.md 投影为 `site/lessons/<dir>/index.md`（生成 frontmatter：title 取 lesson.yaml，description 取 idea），并汇总写 `site/lessons-meta.json`
+  - `pnpm run sync` 一次完成两件事：① 把 `lines`（src 下非 `*.test.ts` 的 `.ts` 文件非空行数）与 `tools`（`= defineTool(` 出现次数，排除函数声明行）写回每个 `lessons/<dir>/lesson.yaml`（保留注释与字段顺序）；② 把每个 README.md 投影为 `site/lessons/<dir>/index.md`（生成 frontmatter：title 取 lesson.yaml，description 取 idea），并汇总写 `site/lessons-meta.json`
   - `lessons-meta.json` 为数组，元素字段：`id: string`、`stage: number`、`title: string`、`idea: string`、`lines: number`、`tools: number`、`dsh: { label: string; url: string }[]`、`verifiedDshVersion: string`、`href: string`（如 `/lessons/s01-min-loop/`），按 `id` 升序——Task 6 的 Timeline.vue 按此消费
 
 - [ ] **Step 1: 写失败测试**
@@ -693,11 +693,11 @@ describe('countLines / countTools', () => {
     expect(await countLines([join(dir, 'src', 'a.ts'), join(dir, 'src', 'a.test.ts')])).toBe(2)
   })
 
-  it('数 defineTool 的出现次数', () => {
+  it('数 defineTool 的调用次数，排除函数声明行', () => {
     const dir = join(root, 'fixture2')
     mkdirSync(dir, { recursive: true })
     const file = join(dir, 'tools.ts')
-    writeFileSync(file, 'defineTool({})\ndefineTool({})\n')
+    writeFileSync(file, 'export function defineTool(t) { return t }\nconst a = defineTool({})\nconst b = defineTool({})\n')
     expect(countTools([file])).toBe(2)
   })
 })
@@ -724,7 +724,7 @@ describe('syncLessons', () => {
       ].join('\n'),
     )
     writeFileSync(join(lessonDir, 'README.md'), '# 最小循环\n\n正文。\n')
-    writeFileSync(join(lessonDir, 'src', 'main.ts'), 'defineTool({})\n\nconst x = 1\n')
+    writeFileSync(join(lessonDir, 'src', 'main.ts'), 'const t = defineTool({})\n\nconst x = 1\n')
 
     await syncLessons(root)
 
@@ -773,10 +773,10 @@ export async function countLines(files: string[]): Promise<number> {
   return lines
 }
 
-/** 数 files 里 defineTool( 出现次数（课程定义工具的统一约定）。 */
+/** 数 files 里 = defineTool( 出现次数（只数调用赋值，排除函数声明行——课程定义工具的统一约定）。 */
 export function countTools(files: string[]): number {
   return files.reduce(
-    (n, file) => n + (readFileSync(file, 'utf8').match(/defineTool\(/g)?.length ?? 0),
+    (n, file) => n + (readFileSync(file, 'utf8').match(/= defineTool\(/g)?.length ?? 0),
     0,
   )
 }
@@ -1116,7 +1116,7 @@ pnpm --filter @learn-dsh/s01-min-loop dev
 ```markdown
 # 术语表
 
-中文正文保留英文术语，本表对齐 [dsh 的 glossary](https://github.com/deepseek-ai/deepseek-harness/blob/main/docs/glossary.md)（验证版本 0.1.0-rc.5）。
+中文正文保留英文术语，本表对齐 [dsh 的 glossary](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)（验证版本 0.1.0-rc.5）。
 
 | 术语 | 中文 | 一句话解释 |
 |---|---|---|
@@ -1228,7 +1228,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -1265,7 +1265,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11
       - uses: actions/setup-node@v4
         with:
           node-version: 22

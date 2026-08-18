@@ -1,0 +1,13 @@
+id: s01
+stage: 1
+slug: min-loop
+title: 最小循环：一个能干活的 agent
+idea: 最小可用的 agent = 调模型、跑工具、喂结果的循环
+lines: 96
+tools: 2
+dsh:
+  - label: packages/core/agent-loop
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/agent-loop
+  - label: docs/architecture.md（Turn flow 一节）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
+verifiedDshVersion: 0.1.0-rc.5
