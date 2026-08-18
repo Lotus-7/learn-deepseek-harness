@@ -34,15 +34,18 @@ const maxLines = Math.max(...(lessons as LessonMeta[]).map((l) => l.lines), 1)
       <span class="note">{{ stage.note }}</span>
     </h2>
     <div class="cards">
-      <a v-for="lesson in byStage(stage.id)" :key="lesson.id" :href="lesson.href" class="card">
+      <div v-for="lesson in byStage(stage.id)" :key="lesson.id" class="card">
         <div class="card-head">
-          <span class="id">{{ lesson.id }}</span>
-          <span class="title">{{ lesson.title }}</span>
+          <a :href="lesson.href" class="card-link">
+            <span class="id">{{ lesson.id }}</span>
+            <span class="title">{{ lesson.title }}</span>
+          </a>
         </div>
         <p class="idea">{{ lesson.idea }}</p>
         <div class="badges">
           <span class="badge">{{ lesson.lines }} 行</span>
           <span class="badge">{{ lesson.tools }} 个工具</span>
+          <span class="badge">dsh v{{ lesson.verifiedDshVersion }}</span>
         </div>
         <div class="dsh">
           <a
@@ -55,7 +58,7 @@ const maxLines = Math.max(...(lessons as LessonMeta[]).map((l) => l.lines), 1)
           >dsh · {{ d.label }}</a>
         </div>
         <div class="bar" :style="{ width: `${Math.max((lesson.lines / maxLines) * 100, 4)}%` }" />
-      </a>
+      </div>
     </div>
   </section>
 
@@ -76,9 +79,10 @@ const maxLines = Math.max(...(lessons as LessonMeta[]).map((l) => l.lines), 1)
 .stage { margin-top: 2.5rem; }
 .note { font-size: 0.85em; font-weight: normal; opacity: 0.6; margin-left: 0.5rem; }
 .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-.card { display: block; border: 1px solid var(--vp-c-border); border-radius: 8px; padding: 1rem; text-decoration: none; color: inherit; transition: border-color 0.2s; }
+.card { display: block; border: 1px solid var(--vp-c-border); border-radius: 8px; padding: 1rem; transition: border-color 0.2s; }
 .card:hover { border-color: var(--vp-c-brand); }
 .card-head { display: flex; align-items: baseline; gap: 0.5rem; }
+.card-link { display: flex; align-items: baseline; gap: 0.5rem; color: inherit; text-decoration: none; }
 .id { font-family: monospace; color: var(--vp-c-brand); font-weight: 600; }
 .idea { opacity: 0.85; margin: 0.5rem 0; }
 .badges { display: flex; gap: 0.5rem; }
