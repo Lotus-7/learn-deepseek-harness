@@ -1,0 +1,15 @@
+id: s03
+stage: 1
+slug: session-log
+title: session-log：append-only 事件日志是模型的记忆与真理之源
+idea: 会话是只增不改的事件流；模型可见的对话历史从日志投影而来，「模型可见 = 已落日志」
+lines: 576
+tools: 3
+dsh:
+  - label: packages/core/session
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/session
+  - label: packages/core/session/src/types.ts
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/session/src/types.ts
+  - label: docs/architecture.md（Session log 一节）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#session-log
+verifiedDshVersion: 0.1.0-rc.5
