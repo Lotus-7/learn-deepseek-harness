@@ -1,0 +1,36 @@
+id: s06
+stage: 2
+slug: compaction
+title: compaction：上下文压缩——在有限窗口里干无限的活
+idea: 估算 token 超阈值时把头部交给注入式摘要器，落一条 session/compacted 事件——日志依旧
+  append-only，派生历史从压缩点起 = summary（user 形态）+ 尾部窗口；丢的是视图，不是历史
+lines: 1266
+tools: 10
+dsh:
+  - label: packages/compaction/README.md（Compaction 能力族：seam + 后端 + 修剪器 + 命令）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/README.md
+  - label: packages/compaction/compaction/src/index.ts（CompactionEngine，ctx.compaction）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction/src/index.ts
+  - label: packages/compaction/compaction/src/types.ts（compaction/* 事件与
+      CompactionResult）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction/src/types.ts
+  - label: packages/compaction/compaction/src/tool-pairing.ts（安全切点：不拆
+      tool-call/result 配对）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction/src/tool-pairing.ts
+  - label: packages/compaction/compaction-basic/src/index.ts（BasicCompactionEngine：pressure
+      与 context-overflow 触发）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction-basic/src/index.ts
+  - label: packages/compaction/compaction-basic/src/config.ts（thresholdRatio/retainRatio
+      默认与校验）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction-basic/src/config.ts
+  - label: packages/compaction/compaction-basic/src/region.ts（头部锚定选区与压缩事务）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction-basic/src/region.ts
+  - label: packages/compaction/compaction-basic/src/summarizer.ts（缓存前缀复用的一次性摘要调用）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction-basic/src/summarizer.ts
+  - label: packages/compaction/compaction-tool-result-pruner/src/index.ts（免模型的工具结果修剪）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction-tool-result-pruner/src/index.ts
+  - label: packages/compaction/command-compact/src/index.ts（/compact 命令 Consumer）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/command-compact/src/index.ts
+  - label: packages/core/session/src/surface.ts（surfaceOp replace：替换而不删除）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/session/src/surface.ts
+verifiedDshVersion: 0.1.0-rc.5
