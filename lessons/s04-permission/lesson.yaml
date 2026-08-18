@@ -1,0 +1,21 @@
+id: s04
+stage: 2
+slug: permission
+title: permission：权限与审批——工具不是想跑就能跑
+idea: 权限是管线里的 pre-execute 守卫：三态决策（allow/deny/ask）+ 审批回调 + fail-safe 默认；拒绝以结构化文本回喂模型
+lines: 788
+tools: 6
+dsh:
+  - label: packages/interaction/user-approval
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/interaction/user-approval
+  - label: packages/interaction/user-approval/src/index.ts
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/interaction/user-approval/src/index.ts
+  - label: packages/interaction/permission-presets
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/interaction/permission-presets
+  - label: packages/interaction/tool-ask-user
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/interaction/tool-ask-user
+  - label: packages/core/tools/src/index.ts
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/src/index.ts
+  - label: docs/architecture.md（Turn flow 一节）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
+verifiedDshVersion: 0.1.0-rc.5
