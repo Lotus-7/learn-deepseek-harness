@@ -1,0 +1,32 @@
+id: s08
+stage: 3
+slug: plugins
+title: plugins：把 s01–s06 的成果拆成插件——核心五件套如何协作
+idea: 五件套（model / tools+session / permission / compaction / loop）全部改写为挂进 s07 Ctx
+  的插件； 同一剧本跑出与 s06 逐事件相等的 transcript（重构不改行为）；换一个 permission 或 compaction
+  插件实例，行为即变、其余代码零改动；卸载插件服务消失且响亮报错。s07 未接的线在本课合流： s04 守卫挂上异步 tools/pre-execute
+  拦截链（dsh 同名事件），压缩挂 agent/pre-step（dsh 同名事件）。
+lines: 2061
+tools: 10
+dsh:
+  - label: docs/architecture.md 的 Cordis 一节（"Every part of the product is a plugin"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#cordis
+  - label: packages/core/agent-loop/src/index.ts（AgentLoop 插件：static inject 五服务、贡献
+      agentLoop）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/index.ts
+  - label: packages/core/agent-loop/src/agent.ts（preStep 发起 agent/pre-step
+      瀑布、loopCtx.llm.stream）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/agent.ts
+  - label: packages/core/tools/src/index.ts（ToolRuntime 服务与 tools/pre-execute 等瀑布事件）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/src/index.ts
+  - label: packages/core/session/src/index.ts（SessionStore 服务与 session/event 广播）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/session/src/index.ts
+  - label: packages/core/agent/src/runtime-types.ts（agent/pre-step 等 @mode waterfall
+      契约）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/src/runtime-types.ts
+  - label: packages/compaction/compaction-basic/src/index.ts（BasicCompactionEngine：inject
+      声明、ctx.on('agent/pre-step') 压缩后 next()）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/compaction/compaction-basic/src/index.ts
+  - label: packages/llm/llm/src/index.ts（LlmRuntime 贡献 ctx.llm——教学版 model 插件的真身）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/llm/llm/src/index.ts
+verifiedDshVersion: 0.1.0-rc.5
