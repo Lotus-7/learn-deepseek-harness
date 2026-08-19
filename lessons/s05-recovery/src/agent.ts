@@ -36,7 +36,8 @@ export interface RunLoopOptions extends PipelineHooks {
  *
  * 三条出口都写 turn/end，日志永远是闭合的；唯一的例外是 maxSteps 保险丝
  * （s01 以来的语义）：异常中止留下未闭合的 turn，审计与 fork 都能看出
- * 这段历史不完整。
+ * 这段历史不完整。保险丝的 throw 在 try/catch 之外——abort 恰在最后一步
+ * 落账后、循环耗尽前触发时，catch 的取消改写吞不掉熔断错误。
  * dsh 对应 packages/core/agent-loop/src/agent.ts 的 turn()：abort 与 error
  * 在 catch 里各自给出 TurnEndReason，finally 无条件补写 turn/end——
  * 无论哪条路径，durable 日志都以闭合的 turn 收尾。
@@ -107,12 +108,15 @@ export async function runLoop(
         log.append({ type: 'tool/result', callId: call.id, output: record.output })
       }
     }
-    // 不写 turn/end：异常中止留下未闭合的 turn，审计与 fork 都能看出这段历史不完整。
-    throw new Error(`模型连续 ${maxSteps} 步都在请求工具，超出 maxSteps 上限，循环中止`)
   } catch (error) {
     // 取消：不是错误，是第三条出口。检查 ended 是为了与「模型层 error 收口后
-    // 恰好 signal 也触发」的竞态错开——先定的结局不改写。
+    // 恰好 signal 也触发」的竞态错开——先定的结局不改写。改写只服务取消路径
+    // ——保险丝的 throw 在 try 之外，取消吞不掉它。
     if (signal?.aborted && !ended) return endTurn('aborted')
     throw error
   }
+  // 保险丝在 try/catch 之外上抛：abort 恰在最后一步 tool/result 落账后、循环
+  // 耗尽前触发时，上面的取消改写够不到熔断错误——它原样上抛，turn 保持未闭合。
+  // 不写 turn/end：异常中止留下未闭合的 turn，审计与 fork 都能看出这段历史不完整。
+  throw new Error(`模型连续 ${maxSteps} 步都在请求工具，超出 maxSteps 上限，循环中止`)
 }

@@ -108,6 +108,44 @@ describe('取消：AbortSignal 贯穿', () => {
     await runLoop(followUp, recoveryRegistry(), '换个思路继续', { log, signal: new AbortController().signal })
     expect(log.nextTurn()).toBe(3)
   })
+
+  it('保险丝熔断不被并发的取消吞掉：abort 落在最后一步执行期间，maxSteps 错误仍上抛', async () => {
+    // 竞态构造：maxSteps: 1 的最后一步里，abort 在 preExecute 守卫间隙触发，
+    // 工具本体（echo）不理会 signal、照常完成——tool/result 落账后循环恰好耗尽。
+    // 保险丝的熔断错误必须原样上抛、turn 保持未闭合，不许被 catch 的取消
+    // 改写吞成 turn/end(aborted)（fuse 的 throw 在 try/catch 之外）。
+    const model = createMockModel([
+      {
+        message: { role: 'assistant', content: null, tool_calls: [toolCall('last_1', 'echo', { text: '最后一步' })] },
+        finishReason: 'tool_calls',
+      },
+    ])
+    const controller = new AbortController()
+    const log = new SessionLog()
+    await expect(
+      runLoop(model, recoveryRegistry(), '停不下来的活', {
+        log,
+        maxSteps: 1,
+        signal: controller.signal,
+        preExecute: [
+          () => {
+            controller.abort(new Error('执行期间被外部取消'))
+            return undefined
+          },
+        ],
+      }),
+    ).rejects.toThrow(/maxSteps/)
+    // 已完成的工作在账上，但没有任何 turn/end——是异常中止，不是取消收口
+    expect(log.events.map((event) => event.type)).toEqual([
+      'turn/start',
+      'user/message',
+      'assistant/message',
+      'tool/call',
+      'tool/result',
+    ])
+    // 未闭合的 turn 不是合法的 fork 起点：保险丝的语义没有被取消竞态改写
+    expect(() => log.fork()).toThrow(/未闭合的 turn/)
+  })
 })
 
 describe('工具错误：可恢复的对话事实', () => {

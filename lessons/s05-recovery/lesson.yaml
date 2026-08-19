@@ -4,7 +4,7 @@ slug: recovery
 title: recovery：取消、错误恢复与 turn 生命周期
 idea: AbortSignal 贯穿模型调用与工具执行；工具错误回喂模型可恢复，模型错误收口 turn/end(error) 后上抛；取消收口
   turn/end(aborted)——干净收尾是可恢复的前提
-lines: 942
+lines: 952
 tools: 9
 dsh:
   - label: packages/core/agent/src/index.ts（AgentHandle）

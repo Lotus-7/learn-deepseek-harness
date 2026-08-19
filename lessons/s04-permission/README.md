@@ -92,7 +92,7 @@ move_to_trash  → 放行（rule）：规则 move_to_trash → allow，直接放
 [assistant] 这个会话的策略拒绝了所有工具调用（通配 * → deny），我无法读取或修改任何文件。请先放宽策略。
 ```
 
-本课在 s03 的 src/ 上叠加出一个新文件、动了两个旧文件，建议按这个顺序读：
+本课在 s03 的 src/ 上叠加出一个新文件、动了三个旧文件，建议按这个顺序读：
 
 1. `src/permission.ts` —— 本课主角 `createPermissionGuard`：规则表（工具名或 `'*'`
    通配 → 三态决策，先精确后通配）+ `askUser` 回调注入 + 三条 fail-safe 约定；

@@ -4,7 +4,7 @@ slug: compaction
 title: compaction：上下文压缩——在有限窗口里干无限的活
 idea: 估算 token 超阈值时把头部交给注入式摘要器，落一条 session/compacted 事件——日志依旧
   append-only，派生历史从压缩点起 = summary（user 形态）+ 尾部窗口；丢的是视图，不是历史
-lines: 1266
+lines: 1276
 tools: 10
 dsh:
   - label: packages/compaction/README.md（Compaction 能力族：seam + 后端 + 修剪器 + 命令）

@@ -82,8 +82,9 @@ export const moveToTrashTool = defineTool({
 })
 
 /**
- * 会挂起的工具：正常完成要 60 秒（演示等不到），唯一的出口是监听 signal、
- * 在 abort 时清掉定时器并以取消原因落定——「AbortSignal 友好」的工具体写法。
+ * 会挂起的工具：正常完成要 60 秒（演示等不到），出口有两条——进场先查
+ * signal（已取消就不再开工），挂起中监听 abort、在触发时清掉定时器并以
+ * 取消原因落定——「AbortSignal 友好」的工具体写法。
  * 不监听 signal 的工具体没有中断点：JavaScript 砍不断正在跑的同进程代码
  * （dsh 的立场见 packages/core/tools/src/index.ts："the registry … cannot
  * hard-kill same-process code"），取消必须是协作的。
@@ -96,8 +97,12 @@ export const slowScanTool = defineTool({
     properties: { scope: { type: 'string', description: '要扫描的范围' } },
     required: ['scope'],
   },
-  execute: (args, signal) =>
-    new Promise<string>((resolve, reject) => {
+  execute: (args, signal) => {
+    // 进场检查：abort 可能落在管线入口检查之后的缝隙里（比如 preExecute 守卫
+    // 等人审批的间隙）——已取消就不再开工，也不会白挂 60 秒（已 abort 的 signal
+    // 不会再向迟到的监听器发事件）。AbortSignal 友好的第一课：先看 signal。
+    signal?.throwIfAborted()
+    return new Promise<string>((resolve, reject) => {
       const timer = setTimeout(() => resolve(`扫描完成：${String(args.scope)}（共 0 个问题）`), 60_000)
       signal?.addEventListener(
         'abort',
@@ -107,7 +112,8 @@ export const slowScanTool = defineTool({
         },
         { once: true },
       )
-    }),
+    })
+  },
 })
 
 /** 抛错的工具：execute 抛出的错误经管线变成回喂模型的文本，循环不崩（可恢复）。 */
