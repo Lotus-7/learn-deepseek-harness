@@ -10,9 +10,13 @@ import type { Tool } from './tools'
  * 一个监听器。守卫逻辑一行不改（permission.ts 原样复制前进）：
  * 规则表 allow/deny/ask、askUser 审批、fail-safe 三约定全部照旧——
  * 「重构不改行为」由测试钉住（守卫 trace 与 s06 形态逐条一致）。
- * dsh 对应：packages/interaction 的审批能力监听 packages/core/tools 的
- * 'tools/pre-execute' 瀑布（ask 决议经 ctx.approval 装配的 answerer；
- * 教学版的 askUser 就是那个 answerer 的剧本化替身）。
+ * dsh 对应分两步：权限裁决挂在 packages/core/tools 的 'tools/pre-execute'
+ * 瀑布——监听者返回 PreToolDecision（allow/deny/ask），真实监听者是
+ * packages/hooks、packages/jobs 的插件，packages/interaction 不监听它；
+ * ask 决议由 ToolRuntime 在瀑布之后经 ctx.get('approval') 交给审批服务
+ * （packages/interaction/user-approval 的 ApprovalService——独立的 approval
+ * seam，自带 approval/request 瀑布）。教学版把两步合在链上的一个监听器里：
+ * askUser 就是 approval seam 那个 answerer 的剧本化替身。
  */
 export interface PermissionPlugin extends Plugin {
   /** 底层守卫：演示与测试读它的 trace（每次工具调用的最终裁决与理由）。 */

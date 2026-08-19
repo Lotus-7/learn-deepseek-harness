@@ -12,9 +12,13 @@ declare module './cordis.js' {
     /**
      * 一次模型步骤开始前的拦截点（loop 插件在每个步骤边界发起）。
      * 监听者可在此做步骤前的准备（压缩、预算、审计），然后必须 next() 委托
-     * ——不调即短路，loop 不会发这次请求（「拒绝下一步」类插件的语义）。
-     * dsh 对应 packages/core/agent/src/runtime-types.ts 的 'agent/pre-step'
-     * （@mode waterfall，packages/compaction/compaction-basic 挂它做 step pressure）。
+     * ——不调即短路。教学版的短路只跳过链上后续监听器：loop 丢弃瀑布
+     * 返回值、请求照发，这条瀑布是观察与准备媒介，不是「拒绝下一步」的
+     * 决议点。dsh 对应 packages/core/agent/src/runtime-types.ts 的
+     * 'agent/pre-step'（@mode waterfall）：决议是 PreStepDecision，可 reject
+     * 整个步骤且 loop 尊重拒绝（packages/core/agent-loop/src/agent.ts 的
+     * preStep）——教学版未收这一层；packages/compaction/compaction-basic
+     * 挂它做 step pressure。
      * @mode waterfall-async
      */
     'agent/pre-step': AsyncWaterfallEvent<{ turn: number; step: number }>

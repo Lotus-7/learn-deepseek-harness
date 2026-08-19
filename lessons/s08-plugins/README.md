@@ -13,7 +13,7 @@ s07 结尾留下一条没接的线：s04 的权限守卫还是循环参数，压
 |---|---|---|---|---|
 | model | `model`（适配器本体） | — | — | `llm/llm` 贡献 `ctx.llm`，provider 插件注册其上 |
 | tools-session | `tools`（名册+执行）、`sessions`（日志+落账即广播） | — | 发起 `tools/pre-execute`、广播 `session/event` | `core/tools` + `core/session`（两个包，见下） |
-| permission | 无（纯拦截插件） | `tools` | `tools/pre-execute`（异步拦截链） | 审批能力监听 `tools/pre-execute` 瀑布 |
+| permission | 无（纯拦截插件） | `tools` | `tools/pre-execute`（异步拦截链） | hooks、jobs 等插件在此瀑布裁决 allow/deny/ask；`ask` 决议由 ToolRuntime 在瀑布后经 `ctx.approval` 解析 |
 | compaction | 无（纯拦截插件） | `sessions` | `agent/pre-step`（异步拦截链） | `compaction/compaction-basic` 监听同事件 |
 | loop | `agent`（`run()`） | `model`、`tools`、`sessions` | 发起 `agent/pre-step`、emit `agent/step` | `core/agent-loop`（inject 声明五服务） |
 
@@ -147,7 +147,8 @@ dsh 的口号「everything is a plugin」在本课全部落地，五件套在真
   每步就是「发起瀑布、调 llm 服务」两件事，与教学版 plugin-loop.ts 逐行同构。
 - [packages/core/tools/src/index.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/src/index.ts)：
   `ToolRuntime extends Service`（`super(ctx, 'tools')`，`static inject = ['systemPrompt']`），
-  Events 声明 `tools/pre-execute`（@mode waterfall，ask 决议经审批服务）、
+  Events 声明 `tools/pre-execute`（@mode waterfall；ask 决议由 ToolRuntime
+  在瀑布后经 `ctx.get('approval')` 交给审批服务解析）、
   `tools/execute`、`tools/post-execute`（三段瀑布）与 `tools/result`、
   `tools/change`（emit）——教学版把执行管线折叠进 `tools` 服务的 `execute`，
   真版把 pre/around/post 全部摊成事件。

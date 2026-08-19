@@ -6,7 +6,7 @@ idea: 五件套（model / tools+session / permission / compaction / loop）全�
   的插件； 同一剧本跑出与 s06 逐事件相等的 transcript（重构不改行为）；换一个 permission 或 compaction
   插件实例，行为即变、其余代码零改动；卸载插件服务消失且响亮报错。s07 未接的线在本课合流： s04 守卫挂上异步 tools/pre-execute
   拦截链（dsh 同名事件），压缩挂 agent/pre-step（dsh 同名事件）。
-lines: 2061
+lines: 2071
 tools: 10
 dsh:
   - label: docs/architecture.md 的 Cordis 一节（"Every part of the product is a plugin"）

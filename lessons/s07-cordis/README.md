@@ -147,6 +147,9 @@ auditTrail（注册即效果、卸载即逆序回滚的可观测面）：
   的 `EventsService`：五种分发模式——`emit`（同步观察）、`waterfall`（同步
   拦截链，`cbs.shift() ?? inner` 就是本课 `dispatch(index)` 的原型）、`parallel`
   （并发等全部）、`serial`（顺序等首个 bail）、`bail`（同步取首个 bail）。
+  上文的 cordis-primer.md 模式表只列前四种——入门先看那张表即可；第五种
+  以 vendor 源码为准：`bail` 在 `DispatchMode` 联合里，`@mode bail` 事件在
+  仓里真实使用（如 packages/client/ui-input-trigger 的输入触发事件）。
   `on()` 的注册走 `fiber.effect()`（`register()` 方法），与本课 `on()` 的实现
   同构。模式是事件的公开契约，用 `@mode` 标注、由生成目录核对——本课把它编进
   `EmitEvent`/`WaterfallEvent` 的类型。

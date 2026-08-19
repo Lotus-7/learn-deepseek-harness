@@ -23,8 +23,10 @@ export function compactionPlugin(options: CompactionOptions): Plugin {
         const sessions: SessionService = ctx.get('sessions')
         // 落账走 session 服务的 append：压缩事件与其它事实一样「落账即广播」。
         await maybeCompact(sessions.log, options, sessions.append)
-        // 压缩完委托：步骤照常进行。不调 next() 会短路整个步骤（loop 不会发请求），
-        // 那是「拒绝下一步」类插件的语义，不是压缩器的。
+        // 压缩完委托：步骤照常进行。教学版短路只跳过链上后续监听器——loop
+        // 丢弃瀑布返回值、请求照发，这里没有「拒绝下一步」的语义；dsh 的
+        // pre-step 决议（PreStepDecision）才可 reject 步骤且被 loop 尊重
+        // （见 plugin-loop.ts 的事件目录注释）。
         return next(probe)
       })
     },
