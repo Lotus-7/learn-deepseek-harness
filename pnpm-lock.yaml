@@ -75,6 +75,12 @@ importers:
         specifier: workspace:*
         version: link:../shared/mock-model
 
+  lessons/s10-sandbox:
+    dependencies:
+      '@learn-dsh/mock-model':
+        specifier: workspace:*
+        version: link:../shared/mock-model
+
   lessons/shared/mock-model: {}
 
   site:
