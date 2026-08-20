@@ -7,7 +7,7 @@ idea: fs 与 subprocess 共享一个部署身份：ExecutionWorld 接口（exten
   SandboxWorld（进程内虚拟 世界：复用 s09 RemoteFs 当围栏 FS + 虚拟命令解释器
   echo/cat/wc，路径围栏在解释之前拒绝）。 run_command 工具只依赖接口，换世界零改动；同一脚本两世界事件序列同形、执行特征不同 （真进程
   vs 零进程）；拒绝是带码回喂（退出码是结果、策略拒绝是错误），模型换安全路线重试。
-lines: 2954
+lines: 2966
 tools: 14
 dsh:
   - label: docs/architecture.md 的 Capability seams 一节（"Filesystem and subprocess
