@@ -129,25 +129,38 @@ export function toolsSessionPlugin(tools: Tool[]): Plugin {
           })
           context.signal?.throwIfAborted()
 
+          /**
+           * 管线早期的失败也落 tool/result（s11 修复，复制链从 s08 带下来的缺口）：
+           * 未知名（受限名册外的调用）、非法 JSON、参数校验不过——它们与守卫否决
+           * 一样是**对话的一部分**，模型看得见才能改道；函数版管线
+           * （pipeline.ts 的 executeToolCall）由 runLoop 统一落账，本就没有这个洞，
+           * s08 把落账挪进服务时漏了这三条早退路径。s11 的受限工具集
+           * （子代理调不到的工具响亮报错）正是靠这条路径回喂，测试钉住它。
+           */
+          const fail = (args: Record<string, unknown>, output: string): ToolCallRecord => {
+            sessions.append({ type: 'tool/result', callId: call.id, output })
+            return finish(args, output, true)
+          }
+
           let tool: Tool
           try {
             tool = registry.lookup(name)
           } catch (error) {
-            return finish({}, `错误：${(error as Error).message}`, true)
+            return fail({}, `错误：${(error as Error).message}`)
           }
 
           let args: Record<string, unknown>
           try {
             args = JSON.parse(call.function.arguments) as Record<string, unknown>
           } catch (error) {
-            return finish({}, `参数校验失败：arguments 不是合法 JSON（${(error as Error).message}）`, true)
+            return fail({}, `参数校验失败：arguments 不是合法 JSON（${(error as Error).message}）`)
           }
           if (typeof args !== 'object' || args === null || Array.isArray(args)) {
-            return finish({}, `参数校验失败：arguments 根必须是 JSON 对象，实际是 ${describeType(args)}`, true)
+            return fail({}, `参数校验失败：arguments 根必须是 JSON 对象，实际是 ${describeType(args)}`)
           }
           const violations = validateArguments(tool.parameters, args)
           if (violations.length > 0) {
-            return finish(args, `参数校验失败：${violations.join('；')}`, true)
+            return fail(args, `参数校验失败：${violations.join('；')}`)
           }
 
           // 拦截链（tools/pre-execute）：内置行为是真正的执行。拦截器全部委托时
