@@ -1,0 +1,54 @@
+id: s11
+stage: 4
+slug: subagent
+title: subagent：子代理——委派与隔离
+idea: 委派解决上下文经济学（父的增长是 O(委派次数)而非 O(子的步数)），隔离让它不变质——上下文 （子有自己的 SessionLog，父日志只记
+  delegate 一对 tool 事件，子日志经 logOf 单独可查）、
+  能力（工具集显式白名单而非默认全量，白名单外响亮回喂）、可观察性（子的账本独立成册）。防无限递归两道闸： 装配期默认白名单不含
+  delegate（含即构造抛错），运行期绝对深度上限（默认 2，子深=父+1，超限在 spawn 之前拒并回喂补救语，零副作用）。delegate
+  工具阻塞等子跑完，回喂子的最终回答+委派开销 （事件数/轮次/用过的工具），收完即 dispose 卸载子装配。
+lines: 3579
+tools: 15
+dsh:
+  - label: packages/subagent/README.md（subagent 家族总览表：一个 Definition +
+      spawn/fork/acp/claude-code/codex/dsh-sdk 五种传输 + 三个模型面工具）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/subagent
+  - label: packages/subagent/subagent/src/types.ts（SubagentStartRequest 的 maxDepth 与
+      toolFilter——"the named tools vanish from the child's prompt AND refuse to
+      execute (one visibility)"；SubagentResult 的 output 选择；SubagentRun.result
+      不因子的失败而 reject；SubagentCapabilities 在委派之前校验）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/types.ts
+  - label: packages/subagent/subagent/src/index.ts（SubagentRuntime：named-provider
+      registry——"Unlike the bash seam … MULTIPLE providers coexist
+      here"；subagent/start 与 subagent/end 生命周期事件对）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/index.ts
+  - label: packages/subagent/subagent/src/depth.ts（delegationDepthOf：持久化 session
+      header 是单调下限，重启不能把子重新数成顶层；assertSubagentMaxDepth 的域校验）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/depth.ts
+  - label: packages/subagent/subagent/src/child-agent.ts（resolveChildDepth：子深=父+1、 超
+      cap 抛 SubagentDepthError；applyChildComposition：子 join 父的 preset 再叠
+      persona/toolFilter）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/child-agent.ts
+  - label: packages/subagent/subagent-spawn-in-process/src/index.ts（spawn provider：
+      inheritsParentContext=false——fresh child 看不到父对话；capabilities 四项全开）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent-spawn-in-process/src/index.ts
+  - label: packages/subagent/subagent-in-process-driver/src/index.ts（共享驱动
+      startInProcessRun：深度检查→创建子→投递→等空闲→readResult 从子日志折叠结果—— outcomeOf 的对照真身）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent-in-process-driver/src/index.ts
+  - label: packages/subagent/tool-subagent/src/index.ts（模型面委派工具：config 绑定 provider
+      名、maxDepth 默认 3（0 禁止委派）、foreground await result 后必 dispose、 非 completed 变
+      errored tool result 且保留子的部分输出）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/src/index.ts
+  - label: .agents/notes/implemented/feature/2026-06-21-subagent-capability-seam.md（seam
+      决策原文："the parent's log records only the spawn tool/call and its
+      tool/result, while child steps and tool calls remain outside the parent
+      log"；为什么是 named-provider registry；递归与深度上限的 Consequences）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-06-21-subagent-capability-seam.md
+  - label: .agents/notes/implemented/feature/2026-07-12-subagent-persona-tool-filter-and-depth.md（三个组合控制的精确语义；
+      "Visibility is not authority"——toolFilter 是受信同进程的组合行为，不是安全边界）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-07-12-subagent-persona-tool-filter-and-depth.md
+  - label: docs/architecture.md 的 Capability seams 一节（"Subagent providers vary just
+      as widely behind one interface, from a fresh child agent to a delegated
+      turn in another product"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#capability-seams
+verifiedDshVersion: 0.1.0-rc.5
