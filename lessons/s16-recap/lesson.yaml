@@ -11,7 +11,7 @@ idea: '收官课不加新机制，做两件事：① 整合演示——s14 的 f
   三角色清单，每条课号 + 真仓路径）；16 课术语精选总表。代码上补齐底座缺口： persistence 行收进 BASE（s14
   时在运行时装配位），行序在 tools 前——种子历史经 persistence 服务流向 tools 行（Ctx.has 显式分支）；恢复 s12 真跑的
   summary-report 工作流（s14 曾收占位）。'
-lines: 5581
+lines: 5582
 tools: 19
 dsh:
   - label: docs/architecture.md 的 Where new behavior goes 一节（本课对照总表的原文："New behavior

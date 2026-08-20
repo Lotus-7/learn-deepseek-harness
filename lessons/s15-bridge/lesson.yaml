@@ -3,11 +3,11 @@ stage: 5
 slug: bridge
 title: 'bridge：桥接课——用真实 @deepseek-ai/dsh-* 包组装自己的 mini harness'
 idea: '前 14 课的教学 harness 是自己写的：自己 defineTool、自己 append 事件日志、自己 mount 插件。
-  本课不复制前进——站在课程自建代码之外，另起一个直接依赖真实 npm 包 (@deepseek-ai/cordis@4.0.1 + 六个
-  @deepseek-ai/dsh-*@0.1.0-rc.8，逐包 npm view 核实)的最小项目，把同一套概念在真包上重装一遍：llm seam
-  上挂一个自写剧本式 adapter（继承 LlmAdapter、只实现 stream() 一个方法、按序吐 StreamChunk——与上游
-  agent-loop 自己的 keyless 测试同一条无 key 组装路径），tools seam 上用真 defineTool 注册
-  add/echo，六个包挂成一棵 cordis 插件树（LlmRuntime/SessionStore/
+  本课不复制前进——站在课程自建代码之外，另起一个直接依赖真实 npm 包 (@deepseek-ai/cordis@4.0.1 + 七个
+  @deepseek-ai/dsh-*@0.1.0-rc.8——六个插件树包加 dsh-tool-todo 工具包，逐包 npm view
+  核实)的最小项目，把同一套概念在真包上重装一遍：llm seam 上挂一个自写剧本式 adapter（继承 LlmAdapter、只实现 stream()
+  一个方法、按序吐 StreamChunk——与上游 agent-loop 自己的 keyless 测试同一条无 key 组装路径），tools seam
+  上用真 defineTool 注册 add/echo，六个包挂成一棵 cordis 插件树（LlmRuntime/SessionStore/
   SystemPrompt/ToolRuntime/AgentRegistry/AgentLoop——正是 AgentLoop.inject 点名的五个
   服务再加驱动器自己），然后 followup 一句话跑通 s01 的同款剧本：模型发 tool call→add 执行→结果作为 tool-result
   回喂第二次请求→终答落进 append-only 会话日志。 打印面走 session/event

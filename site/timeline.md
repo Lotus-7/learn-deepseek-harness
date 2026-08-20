@@ -4,6 +4,6 @@
 `@deepseek-ai/dsh-*` 包组装你自己的 harness。
 
 每课标注对应 deepseek-harness 的包（dsh 徽章）与验证过的版本。
-当前已上线课程随写作推进更新；s02–s16 见[关于页](/about)的写作计划。
+全部 16 课（s01–s16）已写作完成并上线。
 
 <Timeline />

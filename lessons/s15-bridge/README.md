@@ -9,8 +9,9 @@
 `src/` 叠加新能力，课程代码是自建的教学版（自己的 `defineTool`、自己的
 `SessionLog`、自己的迷你 cordis）。本课**不复制前进**：`lessons/s15-bridge/`
 是一个独立的最小项目，`package.json` 里依赖的是 npm 上公开发布的
-`@deepseek-ai/cordis@4.0.1` 与六个 `@deepseek-ai/dsh-*@0.1.0-rc.8`（精确
-pin，逐包 `npm view` 核实；本课测试会锁死声明与安装一致）。课程自有代码一行
+`@deepseek-ai/cordis@4.0.1` 与七个 `@deepseek-ai/dsh-*@0.1.0-rc.8`（六个
+插件树包 + `dsh-tool-todo` 工具包——后者留给「改两个地方」；精确 pin，逐包
+`npm view` 核实，本课测试会锁死声明与安装一致）。课程自有代码一行
 不进来——桥接的意义就是证明：**前 14 课教的概念就是真包的概念**。
 
 同构到什么程度？本课跑的是 s01 的同款剧本（`add(2,3)` → `echo` 复读 →

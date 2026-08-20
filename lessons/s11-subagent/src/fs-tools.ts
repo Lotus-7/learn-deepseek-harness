@@ -19,10 +19,11 @@ import { FsError, type FsErrorCode, type FsService } from './fs-service'
  *
  * 错误的模型面呈现：provider 抛 {@link FsError}（契约内失败），本 Consumer
  * 按码补一句「下一步怎么办」再原样上抛——由 s02/s08 管线落成回喂模型的
- * tool/result（可恢复，循环不崩）。补补救语而不改错误本身，逐字对应
- * dsh 的 tool-fs/src/error.ts：REMEDIES 只对 FS_STALE_VERSION /
- * FS_NOT_OBSERVED 补「re-read the file, then retry」，code 保留、
- * 原错误挂 cause。契约外的意外异常不接——直接走 s05 的通用回喂路径。
+ * tool/result（可恢复，循环不崩）。补补救语而不改错误本身，做法逐字对应
+ * dsh 的 tool-fs/src/error.ts：REMEDIES 按错误码各补各的——FS_STALE_VERSION
+ * 补「re-read the file, then retry」、FS_NOT_OBSERVED 补「read the file,
+ * then retry」（两串只差一个 re-，真仓原文如此），code 保留、原错误挂
+ * cause。契约外的意外异常不接——直接走 s05 的通用回喂路径。
  */
 const REMEDIES: Partial<Record<FsErrorCode, string>> = {
   FS_OUT_OF_ROOT: '本环境的文件系统有根边界；请改用根之内的路径重试',

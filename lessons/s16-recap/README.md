@@ -59,7 +59,7 @@ pnpm --filter @learn-dsh/s16-recap dev
 四条 ask 审批围住危险面（s04/s14）、每条事实落账即落盘（s13）——重启之后，同一个 full profile
 从同一份底座 resume，模型仍记得上周的账。
 
-本课新增三个文件，建议按这个顺序读：
+本课新增两个文件，其余是对 s14 复制件的多处改动，建议按这个顺序读：
 
 1. `src/integration.ts` —— 剧本与数据（演示与测试共用）：先看 `salesCsv`/`regionsCsv`
    （数据是确定性的函数产物）与 `REQUEST`（自检数字写进 user 正文——数字事实才能进压缩摘要，

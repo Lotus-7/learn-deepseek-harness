@@ -81,7 +81,7 @@ pnpm --filter @learn-dsh/s09-seam dev
    turn 照常收尾（turn/end(completed)）——能力消失被模型看见，进程不崩。
 ```
 
-本课新增五个文件，建议按这个顺序读：
+本课新增六个文件、重写 `src/index.ts`（装配器换代），建议按这个顺序读：
 
 1. `src/fs-service.ts` —— Definition：接口 + `FsErrorCode` + `fs` 服务键，零 import——
    「接口归调用方所有」从依赖方向上就能读出来；错误语义全部写在契约注释里。
@@ -150,8 +150,9 @@ dsh 里每个能力都是一条 seam，文件系统是教学版的原型，shell
 - [packages/fs/tool-fs/src/index.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/src/index.ts)：
   Consumer 的真身：`export const inject = ['tools', 'fs', 'systemPrompt']`——注入声明
   就是「消费谁」；工具经 `ctx.fs` 执行，包文档写明「never a concrete provider」。
-  同包的 `error.ts` 是教学版 REMEDIES 的原型：只给 `FS_STALE_VERSION`、
-  `FS_NOT_OBSERVED` 补「re-read the file, then retry」，code 保留、原错误挂 cause。
+  同包的 `error.ts` 是教学版 REMEDIES 的原型：`FS_STALE_VERSION` 补
+  「re-read the file, then retry」、`FS_NOT_OBSERVED` 补「read the file, then
+  retry」（两串只差一个 re-），code 保留、原错误挂 cause。
 - [packages/shell/shell/src/index.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/shell/shell/src/index.ts)：
   另一个 seam 实例：`ShellExecutor` 抽象类（`super(ctx, 'shell')`）。它的
   `resolve(request): ShellExecSpec` 是「显式 resolve，不许藏在 run 里 `?? 默认`」的

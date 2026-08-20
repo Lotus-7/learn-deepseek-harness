@@ -14,7 +14,7 @@ idea: 技能是「规程 + 可选附加工具」的可加载能力单元：load_
   prompt 由 systemPrompt 服务每步组装）、workflow 工具前台等待（"there is no background
   start/poll API"）—— start/collect 分离的现役真码在 jobs
   家族（job_output/job_list/job_kill）。
-lines: 4431
+lines: 4432
 tools: 19
 dsh:
   - label: packages/skill/README.md（skill 家族总览表：skill/ 定义

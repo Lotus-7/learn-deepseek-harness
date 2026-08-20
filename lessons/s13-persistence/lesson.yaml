@@ -15,7 +15,7 @@ idea: 持久化兑现 s03 的地基：append-only 事件日志逐行落 JSONL �
   parentSession/seedLength 谱系落头，之后两边独立增长互不可见（OPEN_TURN 拒绝与 SessionStore.fork
   同款）。 replay 是日志的又一个纯函数投影。教学版省略：并发写（真码 per-id promise 链串行化）、zstd 压缩、目录布局、
   schema 迁移（SQLite SCHEMA_VERSION 单调、不匹配拒绝不迁移）。
-lines: 4915
+lines: 4916
 tools: 19
 dsh:
   - label: packages/session/README.md（session 家族总览：persistence（session-persistence

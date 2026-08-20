@@ -17,7 +17,7 @@ idea: 's08 以来装配一直是手写函数：五件套 + 各能力插件一行
   回喂、模型改走只读路径 → 一行 patch 解锁 write_file 结局翻转（跑仍被拒——整行重述没顺带解锁）。dsh 对应： dsh-base 的
   cordis.patch.yml（每个 profile 的第一层）、web-app/headless 两个 mode bundle、app-boot 的
   loadProfile/composeEntries、apps/cli 的 --profile 旗子。'
-lines: 5363
+lines: 5364
 tools: 19
 dsh:
   - label: packages/bundle/base/cordis.patch.yml（dsh-base：每个 profile 的第一层。一次 insert
