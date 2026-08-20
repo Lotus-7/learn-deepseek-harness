@@ -10,8 +10,9 @@ idea: 委派解决上下文经济学（父的增长是 O(委派次数)而非 O(�
 lines: 3579
 tools: 15
 dsh:
-  - label: packages/subagent/README.md（subagent 家族总览表：一个 Definition +
-      spawn/fork/acp/claude-code/codex/dsh-sdk 五种传输 + 三个模型面工具）
+  - label: packages/subagent/README.md（subagent 家族总览表：一个 Definition + 六种传输
+      provider（spawn/fork 两种 in-process + acp/claude-code/codex/dsh-sdk 四种跨进程）+
+      三个模型面工具）
     url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/subagent
   - label: packages/subagent/subagent/src/types.ts（SubagentStartRequest 的 maxDepth 与
       toolFilter——"the named tools vanish from the child's prompt AND refuse to

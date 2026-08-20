@@ -134,15 +134,16 @@ pnpm --filter @learn-dsh/s11-subagent dev
 
 ## 看真码（进阶导读）
 
-dsh 的 subagent 是一个完整的 capability family（一个 Service Definition + 五种传输
-provider + 三个模型面工具），本课是它的一次性委派（one-shot）、in-process 那一格的
+dsh 的 subagent 是一个完整的 capability family（一个 Service Definition + 六种传输
+provider（spawn/fork 两种 in-process + acp/claude-code/codex/dsh-sdk 四种跨进程）
++ 三个模型面工具），本课是它的一次性委派（one-shot）、in-process 那一格的
 教学投影：
 
 - [packages/subagent/README.md](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/subagent)
   的家族表：`subagent/`（定义 `ctx.subagents`）、`subagent-spawn-in-process/`（fresh
   child）、`subagent-fork-in-process/`（从父的已完成 turn 播种）、`subagent-acp/` 与
   `subagent-claude-code/`、`subagent-codex/`、`subagent-dsh-sdk/`（跨进程传输）、
-  `tool-subagent/`（模型面工具）。教学版的单 provider 在这里是七选一再多传输共存。
+  `tool-subagent/`（模型面工具）。教学版的单 provider 在这里是六选一再多传输共存。
 - [packages/subagent/subagent/src/types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/types.ts)：
   契约原文。`SubagentStartRequest` 的 `maxDepth`（绝对上限）与 `toolFilter`（受限
   工具视图，"the named tools vanish from the child's prompt AND refuse to execute (one
