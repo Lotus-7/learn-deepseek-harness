@@ -1,0 +1,8 @@
+{
+  "name": "@learn-dsh/s05-recovery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "tsx src/index.ts" },
+  "dependencies": { "@learn-dsh/mock-model": "workspace:*" }
+}

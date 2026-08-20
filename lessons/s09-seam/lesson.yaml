@@ -1,0 +1,39 @@
+id: s09
+stage: 3
+slug: seam
+title: seam：capability seam 三角色——换个 provider，整个世界跟着走
+idea: 一个可替换能力的正式形状是三个角色：Service Definition（FsService 接口 + 错误分类 + fs 服务键）、两个
+  Service Provider（MemoryFs 全路径可达零延迟；RemoteFs /remote 前缀隔离 + 模拟往返）、 三个 Consumer
+  工具（read_file/write_file/list_dir，只 import 契约）。装配行上显式选 provider；
+  同一任务在两个世界事件序列同形、回答逐字相同、耗时特征不同；RemoteFs 越界 → FsError 回喂 →
+  模型按补救语换安全路径；重复装配重名响亮报错、卸载即能力消失。接口归调用方所有； 三角色缺一不可。
+lines: 2461
+tools: 13
+dsh:
+  - label: docs/architecture.md 的 Capability seams 一节（三角色定义与 "one provider swap
+      changes the whole product"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#capability-seams
+  - label: docs/capability-seams.md（生成的能力图：ctx.fs 一行的
+      Owner/Implementations/Consumers 三列）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md
+  - label: packages/fs/fs/src/index.ts（FileSystem Service Definition：abstract class
+      extends Service、ctx.fs 声明合并、fs/write-intent 等 fs/* 事件）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs/src/index.ts
+  - label: packages/fs/fs/src/types.ts（FsErrorCode 错误分类与 FsError——契约的错误语义）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs/src/types.ts
+  - label: packages/fs/fs-local/src/index.ts（LocalFileSystem Provider：cwd 是解析默认不是围栏）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs-local/src/index.ts
+  - label: packages/fs/fs-sandbox/src/index.ts（SandboxedFileSystem：继承 Local 只加围栏，
+      "the whole swap — the model-facing tools are untouched"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs-sandbox/src/index.ts
+  - label: packages/fs/tool-fs/src/index.ts（Consumer：inject = ['tools', 'fs',
+      'systemPrompt']，never a concrete provider）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/src/index.ts
+  - label: packages/fs/tool-fs/src/error.ts（REMEDIES 按错误码补补救语——教学版 REMEDIES 的原型）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/src/error.ts
+  - label: packages/shell/shell/src/index.ts（另一个 seam：ShellExecutor 的
+      resolve(request)→ ShellExecSpec；同一 ctx 第二个实现挂载即抛错）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/shell/shell/src/index.ts
+  - label: .agents/notes/implemented/architecture/2026-06-13-capability-seams.md（三角色与变化率的原始论证）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-06-13-capability-seams.md
+verifiedDshVersion: 0.1.0-rc.5

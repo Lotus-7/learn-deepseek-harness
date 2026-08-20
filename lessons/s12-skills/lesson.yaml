@@ -1,0 +1,76 @@
+id: s12
+stage: 4
+slug: skills
+title: 'skills：技能系统与后台工作流'
+idea: 技能是「规程 + 可选附加工具」的可加载能力单元：load_skill 一次做三件事——目录校验（未知名带名册响亮回喂）、
+  附加工具注册进名册（冲突在注入前判定零副作用；同名同对象视为幂等重载）、instructions 落 system/message 事件 （模型看得见 ⟺
+  已落账；s01 预留的 system 角色首次启用）。压缩交互的取舍是规程豁免：头部 system 消息不进摘要输入、 不计入
+  shadowedCount，压缩后原位保留——摘要器被授权改写事实，无权改写规程（测试钉住）。技能带来的新工具不自动过权限： 首调落入默认 ask
+  经审批放行（能力面与权限面分离）。后台工作流把「启动」与「取回」拆开：start 登记返回 job id 立即继续 （弱依赖不阻塞主循环，对照 s11
+  delegate 的阻塞委派），collect 取快照顺手推一步——running 给进度、终态给 result/error （failed
+  是终态快照不是异常）。推进机制是事件驱动惰性推进：每条 tool/result 落账全部活 job 各走一拍，
+  与主循环工作量对齐因此完全确定可测；collect 与 tick 并发靠在途锁保证「一次 collect 至多一拍」。 与 dsh
+  的三处形态差如实讲：真仓技能没有工具字段（「手」是资源目录里的脚本）、注入走 user message + source 元数据 （system
+  prompt 由 systemPrompt 服务每步组装）、workflow 工具前台等待（"there is no background
+  start/poll API"）—— start/collect 分离的现役真码在 jobs
+  家族（job_output/job_list/job_kill）。
+lines: 4432
+tools: 19
+dsh:
+  - label: packages/skill/README.md（skill 家族总览表：skill/ 定义
+      ctx.skills、skill-filesystem/ 本地目录 provider、skill-badge/ 打包技能、tool-skill/
+      目录发布 + 模型面 loader；"This capability remains outside the core control spine
+      and can use local, embedded, or remote providers without changing the
+      model-facing contract"）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/skill
+  - label: packages/skill/skill/src/index.ts（SkillRegistry：registerProvider/register/list/snapshot/get；
+      renderSkillContent 的 <skill_content> canonical 包装；skills/change
+      目录失效事件；SKILL_NAME 名字语法——教学版装配数组的重名检查是 provider 注册的退化形态）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill/src/index.ts
+  - label: packages/skill/skill-filesystem/src/index.ts（本地文件
+      provider：project/user/custom/bundled 四类根按 rank 决胜、YAML frontmatter +
+      Markdown 正文、chokidar watch 目录热更新——「技能从磁盘来」 对教学版「技能从装配数组来」）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-filesystem/src/index.ts
+  - label: packages/skill/tool-skill/src/index.ts（模型面真身，与本课差异最大：`skill` 工具结构化 output
+      + render；目录不是工具而是 agent/pre-step 注入的带 skill-catalog source 的 user
+      message，digest 变了才重发布； 用户 /name 手势触发 skill-invocation source——真仓不走 system
+      消息，system prompt 由 systemPrompt 服务每步组装）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/src/index.ts
+  - label: packages/workflow/README.md（workflow 家族总览表：workflow/ 定义
+      ctx.workflowEngine、 workflow-worker-thread/ worker 线程引擎、tool-workflow/
+      通用模型面工具、tool-ralph/ 固定策略工具； "runs model-authored orchestration workflows
+      over subagents"）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/workflow
+  - label: packages/workflow/workflow/src/index.ts（Service Definition
+      真身：WorkflowEngine.start → WorkflowRun、WorkflowError 全 code 皆
+      fatal（组合子必须传播）、六个 workflow/* 观察事件—— "observe-only lifecycle events never
+      expose run control"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow/src/index.ts
+  - label: packages/workflow/workflow/src/types.ts（WorkflowStopReason
+      completed/cancelled/error 与 WorkflowResult 的 value 只在 completed 有意义——本课
+      done/failed 是无取消通道的教学两支）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow/src/types.ts
+  - label: packages/workflow/workflow/src/runtime-types.ts（WorkflowRun："result never
+      rejects; consumers may cancel and must call idempotent dispose()"——本课
+      JobSnapshot「从状态机读不从 Promise 读」 的对照真身）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow/src/runtime-types.ts
+  - label: packages/workflow/workflow-worker-thread/README.md（引擎 provider：每 run 一个
+      worker 线程 + node:vm 上下文，agent() 桥回 subagent seam；"a synchronous script
+      loop cannot block the harness event loop, and a script that ignores
+      cancellation can be terminated with its worker. It is not a security
+      sandbox."——本课事件驱动推进的零线程替身）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow-worker-thread/README.md
+  - label: packages/workflow/tool-workflow/README.md（模型面工具现状的直接对照："The parent turn
+      blocks until the whole workflow settles — there is no background
+      start/poll API, and cancellation discards partial output as an error"——本课
+      start/collect 分离是它明示 deferred 的方向）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/tool-workflow/README.md
+  - label: packages/jobs/README.md（start/collect 语义的现役真码：ctx.jobs 的 owner-fenced 后台
+      job 注册表 + jobs-local/ 进程内实现 + tool-jobs/ 的 job_output/job_list/job_kill
+      模型面工具）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/jobs
+  - label: docs/architecture.md 的 Where new behavior goes 一节（"Add background work |
+      register on `ctx.jobs`; `job_*` tools collect or stop it"——后台工作在真仓的落点是
+      jobs seam 而非 workflow 引擎，两条线各自演化）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#where-new-behavior-goes
+verifiedDshVersion: 0.1.0-rc.5

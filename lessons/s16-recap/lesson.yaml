@@ -1,0 +1,52 @@
+id: s16
+stage: 5
+slug: recap
+title: 'recap：全景回顾——扩展点地图与通向你的业务'
+idea: '收官课不加新机制，做两件事：① 整合演示——s14 的 full profile 为底座跑一条覆盖面最广的
+  剧本，一轮对话串起技能加载（s12）、大文件读入触发压缩（s06）、沙箱命令（s10）、后台 job 两段
+  收取（s12）、子代理复核折叠回父（s11）、落盘 + 重启 resume 续聊（s13），mock 确定性驱动，
+  每能力面至少一条事件/状态断言；重启后第一次模型请求包含重启前事实是记忆延续的硬证据， 收束面断言全链路 append-only（磁盘逐事件一致 +
+  仅凭文件重放投影一致 + 一事件一行）。 ② 文稿为重心：对照总表把 architecture.md 的 Where new behavior goes
+  18 行逐行对上课程 （哪课写过、教学版对应物、未覆盖面如实标注）；「通向你的业务」导读（加工具/换模型/换执行环境/ 改权限/新 seam
+  三角色清单，每条课号 + 真仓路径）；16 课术语精选总表。代码上补齐底座缺口： persistence 行收进 BASE（s14
+  时在运行时装配位），行序在 tools 前——种子历史经 persistence 服务流向 tools 行（Ctx.has 显式分支）；恢复 s12 真跑的
+  summary-report 工作流（s14 曾收占位）。'
+lines: 5582
+tools: 19
+dsh:
+  - label: docs/architecture.md 的 Where new behavior goes 一节（本课对照总表的原文："New behavior
+      attaches to a documented extension point. Changing the loop itself updates
+      this map." 18 行扩展点：ctx.llm 的模型 provider、ctx.tools 的模型面能力、agent preset、
+      ctx.shell / ctx.terminals 后端、ctx.commands 人命令、ctx.jobs 后台工作、ctx.fs 与 fs/*
+      事件、ctx.sandbox 围栏、agent/* 与 tools/* 拦截事件、agent.inject() 模型可见上下文、
+      session/event 渲染、ConversationNodeDefinition、SessionEventMap 持久事件、
+      ctx.sessionTitle、ctx.goals、ctx.sessions.fork、agent.ctx 作用域——每行 ↔ 演示过它的课 ↔
+      教学版对应物）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#where-new-behavior-goes
+  - label: docs/cookbook/extension-cookbook.md（扩展点表的下一层：功能 → 能力映射与逐步指南
+      索引——adding-a-tool / adding-an-llm-adapter / adding-a-package /
+      adding-a-conversation-node）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md
+  - label: packages/core/tools（「想加新工具」的真仓目的地：工具注册表 + 执行管线， schema 进 prompt
+      assembly；配套 docs/cookbook/adding-a-tool.md 的逐步指南）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/core/tools
+  - label: packages/llm/llm（「想换模型」的真仓目的地：llm adapter seam——provider 面注册 ctx.llm，s15
+      的 ScriptedAdapter 挂的就是它；完整 HTTP adapter 样例在同组 llm-deepseek， 指南在
+      docs/cookbook/adding-an-llm-adapter.md）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/llm/llm
+  - label: packages/interaction/permission-presets（「想改权限」的真仓目的地：read-only /
+      workspace-write / danger-full-access 三预设——课程 full/safe 两个 profile 权限差异的
+      真码形态，一行插件配置；审批通道在同组 user-approval）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/interaction/permission-presets
+  - label: packages/fs（「想加新能力 seam」的三角色真仓样例：fs（Definition，能力词汇与服务 契约）/
+      fs-local（Provider，实现契约带来部署事实）/ tool-fs（Consumer，模型面工具只 import
+      Definition）——三个包的目录关系就是 s09 三角色的物理形态）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/fs
+  - label: packages/session/session-persistence-jsonl（本课持久化的真码同位物：JSONL 后端
+      的追加写与扫描修复（torn tail 分流）；s16 把 persistence 行收进教学版 BASE——dsh-base 的
+      cordis.patch.yml 同样有 persistence 行，落盘是底座行为不是演示特权）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/session/session-persistence-jsonl
+  - label: examples/headless-agent（下一站的动手起点：一份 cordis.yml 直接组装最小 agent， 不走 profile
+      层叠——对照 s14「同一底座，不同层叠」的另一种产品发行方式）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/examples/headless-agent
+verifiedDshVersion: 0.1.0-rc.5

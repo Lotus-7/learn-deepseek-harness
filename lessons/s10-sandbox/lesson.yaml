@@ -1,0 +1,54 @@
+id: s10
+stage: 4
+slug: sandbox
+title: sandbox：沙箱与统一执行世界——本地一键换远程
+idea: fs 与 subprocess 共享一个部署身份：ExecutionWorld 接口（extends s09 的 FsService +
+  spawn）统一两张面。 LocalWorld（真磁盘 + 真 child_process，命令白名单在 fork 之前拒绝并回喂）与
+  SandboxWorld（进程内虚拟 世界：复用 s09 RemoteFs 当围栏 FS + 虚拟命令解释器
+  echo/cat/wc，路径围栏在解释之前拒绝）。 run_command 工具只依赖接口，换世界零改动；同一脚本两世界事件序列同形、执行特征不同 （真进程
+  vs 零进程）；拒绝是带码回喂（退出码是结果、策略拒绝是错误），模型换安全路线重试。
+lines: 2967
+tools: 14
+dsh:
+  - label: docs/architecture.md 的 Capability seams 一节（"Filesystem and subprocess
+      providers share one execution world, so pointing them at a remote sandbox
+      moves Bash, PTY, and LSP with them"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#capability-seams
+  - label: .agents/notes/implemented/architecture/2026-07-28-portable-execution-world-consumers.md（ctx.fs
+      与 ctx.subprocess 共同定义一个执行世界的决策原文；备选方案逐条否决的论证）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-07-28-portable-execution-world-consumers.md
+  - label: packages/subprocess/subprocess/src/index.ts（SubprocessRuntime Service
+      Definition： resolveExecutable/spawn/spawnTerminal；"Command defaulting,
+      shell semantics … belong to consumers"；scrubbedParentEnv 凭据清洗）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subprocess/subprocess/src/index.ts
+  - label: packages/subprocess/subprocess-local/src/index.ts（LocalSubprocessRuntime：detached
+      进程树、 SIGTERM→grace→SIGKILL 升级、宿主退出时同步终结）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subprocess/subprocess-local/src/index.ts
+  - label: packages/e2b/README.md（E2B 家族三包：共享沙箱 owner + fs/subprocess 两适配器；"The
+      existing dsh-bash-local, dsh-terminal-bash, and dsh-lsp-stdio need no
+      E2B-specific forks"）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/e2b
+  - label: packages/e2b/e2b/src/index.ts（E2BRuntime：一个沙箱生命周期 owner，两个适配器等待同一个 SDK
+      handle——"filesystem and process operations inhabit one remote Linux
+      world"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/e2b/e2b/src/index.ts
+  - label: packages/e2b/fs-e2b/src/index.ts（filesystem seam 的 E2B Provider："Paths,
+      contents, and atomic staging files remain inside the shared remote
+      sandbox"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/e2b/fs-e2b/src/index.ts
+  - label: packages/e2b/subprocess-e2b/src/index.ts（subprocess seam 的 E2B
+      Provider：远端进程组、 status 文件与清理事务）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/e2b/subprocess-e2b/src/index.ts
+  - label: packages/fs/fs-sandbox/src/index.ts（SandboxedFileSystem：TRUSTED code 里的
+      per-call POLICY fence；"an in-process fence knows exactly what it
+      refused"——结构化 FS_SANDBOX_DENIED）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs-sandbox/src/index.ts
+  - label: packages/shell/bash-sandbox/src/index.ts（SandboxBashExecutor：spawn 前用
+      ctx.sandbox.confine() 包 argv；"Positive runner-launch evidence means the
+      command never ran"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/shell/bash-sandbox/src/index.ts
+  - label: packages/shell/bash-local/src/index.ts（LocalBashExecutor：bash 语义映射到普通
+      ctx.subprocess.spawn——"Execution policy belongs in tools/pre-execute or a
+      sandboxing executor"）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/shell/bash-local/src/index.ts
+verifiedDshVersion: 0.1.0-rc.5

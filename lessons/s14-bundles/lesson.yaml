@@ -1,0 +1,62 @@
+id: s14
+stage: 5
+slug: bundles
+title: 'bundles：profile 与 bundle——同一批插件组装出不同产品'
+idea: 's08 以来装配一直是手写函数：五件套 + 各能力插件一行行 mount。本课把装配变成数据—— base 层（BASE 行表：五件套 +
+  world/subagent/skill/workflow 各 seam 的基线装配， 中性默认值）、profile 层（full：全工具 + 危险操作
+  ask + 基准压缩阈值；safe：委派/后台/可恢复清理 砍出模型面、写/跑/删留在名册直接 deny（fail-closed）、阈值 380
+  更早压）、patch 层（一行整行重述换策略）。 profile 是数据不是代码分叉：两个 profile 共享同一份 BASE 行、同一个
+  TOOL_CATALOG、唯一的 assembleBundle——结构断言钉住（未覆盖行是 base 同一对象、装配出的插件列表一致、JSON 往返后
+  resolve 不变）。覆盖语义与 dsh 逐字对齐：按 id 定位、整体替换、不深合并（"A patch replaces whole row
+  configs — profile overrides must restate every field a row keeps"）——解锁
+  write_file 的 patch 必须照抄其余 deny。装配器拆成两半：resolveBundle 纯函数在挂载之前完成全部校验（覆盖的行 id
+  存在、plugin 一致、名册点名目录内工具、 权限规则点名名册内工具、压缩参数合法——错引响亮报错并列出可用值，misconfiguration
+  fails loud 的前置版；对照真码取舍：dsh 的用户 patch 层对缺失 id 只 warn，
+  因为用户文件面对版本漂移），assembleBundle 按行序挂载（教学版行序即挂载序； dsh "Row order carries no load
+  semantics"）。演示四幕：装配对比 → 同一请求在 full 下写/跑经 ask 批准通过 → 同一请求在 safe 下写被 deny
+  回喂、模型改走只读路径 → 一行 patch 解锁 write_file 结局翻转（跑仍被拒——整行重述没顺带解锁）。dsh 对应： dsh-base 的
+  cordis.patch.yml（每个 profile 的第一层）、web-app/headless 两个 mode bundle、app-boot 的
+  loadProfile/composeEntries、apps/cli 的 --profile 旗子。'
+lines: 5364
+tools: 19
+dsh:
+  - label: packages/bundle/base/cordis.patch.yml（dsh-base：每个 profile 的第一层。一次 insert
+      全部基础行——llm/session/tools/persistence/sandbox/approval/skill/compaction/web……行按
+      id 定位、分组给读者看；文件头写明两条本课同款立场："A patch replaces the targeted row's whole
+      config rather than merging into it, so a row whose value differs by mode
+      does NOT live here"（随模式变的值不属于 base）与 "Row order carries no load semantics
+      (activation is service-availability driven)"（真码行序无加载语义，教学版表序即挂载序是简化））
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml
+  - label: packages/bundle/headless/cordis.patch.yml（mode bundle 真身之一："one-shot task
+      mode directly over dsh-base"——按 id 覆盖 base 的 system-prompt 行（重述 persona）、
+      disable hmr 行、insert 自己的 headless-runner 行。本课 SAFE_PROFILE 的同位物： 对 base
+      行的覆盖集，产品形态的全部差异都在这几个 id 上）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/headless/cordis.patch.yml
+  - label: packages/bundle/web-app/cordis.patch.yml（另一个 mode bundle：浏览器面。
+      文件头一句话讲透覆盖语义："Applied after dsh-base's insert; rows here override base
+      rows by id … A patch replaces the targeted row's whole config, so each row
+      below restates every key it owns"——本课「解锁 write_file 的 patch 必须照抄其余
+      deny」逐字对应）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/cordis.patch.yml
+  - label: packages/boot/app-boot/src/profile.ts（profile 机器：PROFILE_TEMPLATES 里 web
+      = [dsh-base, dsh-web-app]、headless = [dsh-base, dsh-headless]——「底座 + 一个
+      mode 层」的层叠清单；loadProfile 对列了名却没有 dsh.bundle 声明的包 fail loud——"naming a
+      bundle-less package as a layer is a misconfiguration, not 'no patches'"，本课
+      resolve 错引报错的真码立场；composeEntries 在空 entry 列表上应用各层 patch——"so composition,
+      flag derivation, and config dumps cannot drift from what boots"，resolve
+      是纯函数的同一理由）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/profile.ts
+  - label: apps/cli/src/args.ts（--profile 旗子的产品意义：launcher 只解析自己拥有的 --profile /
+      --patch / --dump-config，其余参数原样交给被启动的树——「挑哪个产品」 与「产品内的参数」是两层；--patch 可重复、按
+      argv 序追加为最后一层）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/args.ts
+  - label: apps/cli/src/profile-boot.ts（产品 CLI 的启动序：resolve profile → 按层序叠
+      patch（bundle 层 → profile 的 cordis.patch.yml → home 级 → --patch overlay）→
+      boot 挂载 → watchUserPatches 让用户 patch 层热生效——同一叠层数据，改文件即换产品形态）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/profile-boot.ts
+  - label: docs/architecture.md 的 Profiles and bundles 一节（"A running dsh is a plugin
+      tree composed at boot from ordered layers"；层序原文："each bundle in the
+      profile's listed order, then the profile's cordis.patch.yml, then the
+      home-level one, then any --patch overlay"；--dump-config 一句话：看这台机器真会启动的树）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#profiles-and-bundles
+verifiedDshVersion: 0.1.0-rc.5

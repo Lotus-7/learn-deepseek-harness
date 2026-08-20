@@ -1,0 +1,31 @@
+id: s07
+stage: 3
+slug: cordis
+title: cordis：ctx、可逆 effect、typed events——一切皆插件
+idea: 迷你 Cordis——effect 注册即效果、卸载即逆序回滚；EventMap/ServiceMap 用声明合并
+  扩展（模块内外都能加键）；waterfall 拦截链必须 next() 委托、不调即短路
+lines: 1561
+tools: 10
+dsh:
+  - label: docs/cordis-primer.md（Cordis 五个思想、分发模式表、waterfall 语义）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md
+  - label: vendor/README.md（vendored Cordis 清单与本地修改记录）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/README.md
+  - label: vendor/cordis/src/context.ts（Context 类与 extend/isolate/intercept scope）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/context.ts
+  - label: vendor/cordis/src/fiber.ts（Fiber.effect：效果收集与逆序清理、生命周期状态机）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/fiber.ts
+  - label: vendor/cordis/src/events.ts（EventsService：五种分发模式、on 走 effect、waterfall 组合）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/events.ts
+  - label: vendor/cordis/src/registry.ts（Plugin 三形态、inject 依赖声明、RegistryService）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/registry.ts
+  - label: vendor/cordis/src/service.ts（Service 基类：随 fiber 注册/注销的 ctx.<name>）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/service.ts
+  - label: vendor/cordis/src/reflect.ts（ctx 代理背后的 provide/get/mixin 服务解析层）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/reflect.ts
+  - label: packages/core/session/src/types.ts（SessionEventMap：声明合并的实战事件目录）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/session/src/types.ts
+  - label: packages/core/agent/src/runtime-types.ts（agent/pre-step 等 @mode waterfall
+      事件契约）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/src/runtime-types.ts
+verifiedDshVersion: 0.1.0-rc.5

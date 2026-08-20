@@ -1,0 +1,26 @@
+id: s05
+stage: 2
+slug: recovery
+title: recovery：取消、错误恢复与 turn 生命周期
+idea: AbortSignal 贯穿模型调用与工具执行；工具错误回喂模型可恢复，模型错误收口 turn/end(error) 后上抛；取消收口
+  turn/end(aborted)——干净收尾是可恢复的前提
+lines: 952
+tools: 9
+dsh:
+  - label: packages/core/agent/src/index.ts（AgentHandle）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/src/index.ts
+  - label: packages/core/agent/src/runtime-types.ts（Agent.cancel）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/src/runtime-types.ts
+  - label: packages/core/agent-loop/src/agent.ts（turn 收口）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/agent.ts
+  - label: packages/core/agent/src/inbox.ts
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/src/inbox.ts
+  - label: packages/core/agent/src/consumed-work.ts
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/src/consumed-work.ts
+  - label: packages/core/session/src/types.ts（TurnEndReasonMap）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/session/src/types.ts
+  - label: packages/core/tools/src/index.ts（exec.signal 与 timeoutMs）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/src/index.ts
+  - label: docs/architecture.md（Turn flow 一节）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow
+verifiedDshVersion: 0.1.0-rc.5

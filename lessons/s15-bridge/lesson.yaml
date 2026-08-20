@@ -1,0 +1,47 @@
+id: s15
+stage: 5
+slug: bridge
+title: 'bridge：桥接课——用真实 @deepseek-ai/dsh-* 包组装自己的 mini harness'
+idea: '前 14 课的教学 harness 是自己写的：自己 defineTool、自己 append 事件日志、自己 mount 插件。
+  本课不复制前进——站在课程自建代码之外，另起一个直接依赖真实 npm 包 (@deepseek-ai/cordis@4.0.1 + 七个
+  @deepseek-ai/dsh-*@0.1.0-rc.8——六个插件树包加 dsh-tool-todo 工具包，逐包 npm view
+  核实)的最小项目，把同一套概念在真包上重装一遍：llm seam 上挂一个自写剧本式 adapter（继承 LlmAdapter、只实现 stream()
+  一个方法、按序吐 StreamChunk——与上游 agent-loop 自己的 keyless 测试同一条无 key 组装路径），tools seam
+  上用真 defineTool 注册 add/echo，六个包挂成一棵 cordis 插件树（LlmRuntime/SessionStore/
+  SystemPrompt/ToolRuntime/AgentRegistry/AgentLoop——正是 AgentLoop.inject 点名的五个
+  服务再加驱动器自己），然后 followup 一句话跑通 s01 的同款剧本：模型发 tool call→add 执行→结果作为 tool-result
+  回喂第二次请求→终答落进 append-only 会话日志。 打印面走 session/event
+  firehose（user/message、tool/call、tool/result、 assistant/message、turn 边界——s03
+  词汇的真身）。测试钉住：组装不炸且服务就位、 defineTool DSL 投影成模型可见 JSON Schema、往返核心断言（第二次请求
+  messages 里 有 toolCallId 对得上的 tool-result、日志含完整事件链）、package.json 声明的每个
+  依赖钉在核实版本且与实际解析到的安装版本逐个相等。差距如实声明：npm family 处于 0.1.0-rc 预发布段（latest dist-tag
+  漂移、0.1.0-rc.5 未单独发布而本地 master 源码停在该 release commit），故依赖全部精确 pin 到 0.1.0-rc.8
+  并在测试里锁死。'
+lines: 224
+tools: 2
+dsh:
+  - label: npm @deepseek-ai/dsh-* family（本课依赖的发布物本身；cordis 运行时同scope 发布
+      @deepseek-ai/cordis@4.0.1。dsh family 公开发布的机制在 vendor/README.md："every
+      harness package declares cordis as a peer dependency, so publishing the
+      harness publishes this framework layer too"——本课 pnpm install 拉下来的就是这套两层结构）
+    url: https://github.com/deepseek-ai/deepseek-harness/tree/master/vendor/README.md
+  - label: packages/llm/llm/src/index.ts（llm seam 的 Service Definition：LlmRuntime
+      adapter 注册表 + 流式调用 API；LlmAdapter 抽象类里 stream() 是唯一必须实现的方法—— 本课
+      ScriptedAdapter 的接口面，providerInfo/resolveModel 都有默认实现）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/llm/llm/src/index.ts
+  - label: packages/core/agent-loop/src/index.ts（AgentLoop 的 static inject =
+      ['agents','sessions','llm','tools','systemPrompt'] 是本课最小组装清单的权威出处；
+      create(id, options) 编程面创建 agent；驱动词汇 turn/step 与 followup/whenIdle 生命周期）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/index.ts
+  - label: packages/core/agent-loop/tests/mock-adapter.ts 与 agent.spec.ts（上游自己的
+      keyless 组装路径：MockAdapter extends LlmAdapter 回放剧本 chunk，测试用 new
+      Context()+六个 ctx.plugin()+registerAdapter 组装出完整循环——本课组装代码的出处）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/tests/mock-adapter.ts
+  - label: packages/examples/agent-spine-demo/src/index.ts（产品级「全家桶」装配：apply() 把
+      Timer/llm/session/system-prompt/tools/skill/agent/jobs/invariants/bash/workspace-context
+      逐个 ctx.plugin 成一棵 spine 树——本课是它的六包裁剪版，对照看「最小 vs 产品」差在哪）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/examples/agent-spine-demo/src/index.ts
+  - label: examples/headless-agent/cordis.yml（dsh 真实例子的声明式组装：不走编程面 ctx.plugin，而是
+      Loader 加载这份 YAML——llm-deepseek 行换成剧本 provider 就是无 key 的等价物；s14 层叠组装的落地现场）
+    url: https://github.com/deepseek-ai/deepseek-harness/blob/master/examples/headless-agent/cordis.yml
+verifiedDshVersion: 0.1.0-rc.5
