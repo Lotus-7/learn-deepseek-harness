@@ -99,6 +99,12 @@ importers:
         specifier: workspace:*
         version: link:../shared/mock-model
 
+  lessons/s14-bundles:
+    dependencies:
+      '@learn-dsh/mock-model':
+        specifier: workspace:*
+        version: link:../shared/mock-model
+
   lessons/shared/mock-model: {}
 
   site:
