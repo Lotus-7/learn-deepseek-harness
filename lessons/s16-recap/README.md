@@ -166,6 +166,8 @@ the loop itself updates this map." 下面把它的 18 行逐行对上课程（�
 把功能映射到能力并索引了上面这些逐步指南（packages / tools / LLM adapters / Chat nodes）——
 它是这张地图的下一层。
 
+本课验证版本：`0.1.0-rc.5`（见 `lesson.yaml` 的 `verifiedDshVersion`）。
+
 ## 术语总表
 
 16 课术语的精选汇总（每条标注首次完整出现的课）：
