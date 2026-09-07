@@ -13,7 +13,8 @@
 ```sh
 pnpm install
 pnpm --filter @learn-dsh/s01-min-loop dev   # 任意一课，无需 API key
-pnpm test                                    # 全部课程的 smoke 测试
+pnpm test                                    # 全部单元与集成测试
+pnpm run smoke:lessons                       # 逐课验证公开 dev 入口
 ```
 
 ## 版本锚定

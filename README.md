@@ -12,7 +12,10 @@
 ```sh
 pnpm install
 pnpm --filter @learn-dsh/s01-min-loop dev   # 跑任意一课，无需 API key
-pnpm test                                    # 全部课程的 smoke 测试
+pnpm test                                    # 全部单元与集成测试
+pnpm run smoke:lessons                       # 逐课执行 README 承诺的 dev 入口
+pnpm run validate                            # 检查 16 课的文稿/元数据/入口契约
+pnpm run check                               # 完整本地验收
 pnpm site:dev                                # 本地起站点
 ```
 
@@ -31,4 +34,6 @@ site/       VitePress 站点（lessons 页面由脚本生成，不入库）
   再在 `site/.vitepress/config.ts` 的 sidebar 加一行。
 - 每课工具必须用 `defineTool` 定义（统计口径）；行数/工具数由脚本写回，
   CI 用 `git diff --exit-code` 防手抄漂移。
+- 每课必须保留 `README.md`、`lesson.yaml`、`src/index.ts`、至少一个测试文件和
+  `tsx src/index.ts` 公开入口；`pnpm run validate` 会统一检查。
 - dsh 源码链接在 lesson.yaml 的 `verifiedDshVersion` 锚定验证版本。
