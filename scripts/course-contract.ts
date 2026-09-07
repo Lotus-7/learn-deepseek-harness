@@ -62,6 +62,10 @@ export function validateCourse(root = process.cwd()): CourseContractResult {
     for (const field of ['title', 'idea', 'verifiedDshVersion']) {
       if (typeof meta[field] !== 'string' || meta[field].trim() === '') errors.push(`${dir}: missing ${field}`)
     }
+    // idea 是时间线卡片与页面 description 的数据源，必须是一句话核心理念，不是课程摘要。
+    if (String(meta.idea).length > 120) {
+      errors.push(`${dir}: idea must stay a one-line core idea (≤120 chars), got ${String(meta.idea).length}`)
+    }
     if (!/^0\.1\.0-rc\.\d+$/.test(String(meta.verifiedDshVersion ?? ''))) {
       errors.push(`${dir}: verifiedDshVersion must look like 0.1.0-rc.N`)
     }

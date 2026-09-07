@@ -2,11 +2,7 @@ id: s09
 stage: 3
 slug: seam
 title: seam：capability seam 三角色——换个 provider，整个世界跟着走
-idea: 一个可替换能力的正式形状是三个角色：Service Definition（FsService 接口 + 错误分类 + fs 服务键）、两个
-  Service Provider（MemoryFs 全路径可达零延迟；RemoteFs /remote 前缀隔离 + 模拟往返）、 三个 Consumer
-  工具（read_file/write_file/list_dir，只 import 契约）。装配行上显式选 provider；
-  同一任务在两个世界事件序列同形、回答逐字相同、耗时特征不同；RemoteFs 越界 → FsError 回喂 →
-  模型按补救语换安全路径；重复装配重名响亮报错、卸载即能力消失。接口归调用方所有； 三角色缺一不可。
+idea: 检验标准不是「能换实现」，是「换的实现带着自己的部署特征进场，而对话的形状一个事件不差」。
 lines: 2461
 tools: 13
 dsh:

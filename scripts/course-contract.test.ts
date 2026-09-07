@@ -2,6 +2,7 @@ import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } f
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
+import { parseDocument } from 'yaml'
 import { validateCourse } from './course-contract'
 
 const roots: string[] = []
@@ -26,6 +27,18 @@ describe('course contract', () => {
   it('accepts a complete lesson contract', () => {
     const root = fixtureFromRepository()
     expect(validateCourse(root)).toEqual({ lessonIds: ['s01'], errors: [] })
+  })
+
+  it('rejects an idea bloated into a summary', () => {
+    const root = fixtureFromRepository()
+    const yamlPath = join(root, 'lessons', 's01-min-loop', 'lesson.yaml')
+    const doc = parseDocument(readFileSync(yamlPath, 'utf8'))
+    doc.set('idea', '一句话'.repeat(60))
+    writeFileSync(yamlPath, String(doc))
+
+    expect(validateCourse(root).errors).toContain(
+      's01-min-loop: idea must stay a one-line core idea (≤120 chars), got 180',
+    )
   })
 
   it('reports a broken public entry and missing sidebar route', () => {
