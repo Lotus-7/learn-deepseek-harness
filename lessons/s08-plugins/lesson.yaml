@@ -2,10 +2,7 @@ id: s08
 stage: 3
 slug: plugins
 title: plugins：把 s01–s06 的成果拆成插件——核心五件套如何协作
-idea: 五件套（model / tools+session / permission / compaction / loop）全部改写为挂进 s07 Ctx
-  的插件； 同一剧本跑出与 s06 逐事件相等的 transcript（重构不改行为）；换一个 permission 或 compaction
-  插件实例，行为即变、其余代码零改动；卸载插件服务消失且响亮报错。s07 未接的线在本课合流： s04 守卫挂上异步 tools/pre-execute
-  拦截链（dsh 同名事件），压缩挂 agent/pre-step（dsh 同名事件）。
+idea: 插件化的检验标准不是「能挂载」，是「同一剧本、同一行为，但每一件都能单独换掉、单独拆掉」。
 lines: 2083
 tools: 10
 dsh:

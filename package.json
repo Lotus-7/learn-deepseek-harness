@@ -6,7 +6,10 @@
   "packageManager": "pnpm@11.1.0",
   "scripts": {
     "sync": "tsx scripts/sync-lessons.ts",
+    "validate": "tsx scripts/validate-course.ts",
     "test": "vitest run",
+    "smoke:lessons": "tsx scripts/smoke-lessons.ts",
+    "check": "pnpm run sync && pnpm run validate && pnpm test && pnpm run smoke:lessons && pnpm run site:build",
     "site:dev": "pnpm run sync && pnpm --filter @learn-dsh/site dev",
     "site:build": "pnpm run sync && pnpm --filter @learn-dsh/site build",
     "site:preview": "pnpm --filter @learn-dsh/site preview"

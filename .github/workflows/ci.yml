@@ -20,5 +20,8 @@ jobs:
       - run: pnpm run sync
       - name: 元数据必须与代码同步（防止手抄统计值漂移）
         run: git diff --exit-code
+      - run: pnpm run validate
       - run: pnpm test
+      - name: 每课公开 dev 入口必须真实跑通
+        run: pnpm run smoke:lessons
       - run: pnpm run site:build

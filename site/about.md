@@ -8,12 +8,25 @@
 那边的教学对象源码不可读，只能从零重建；dsh 是开源生产代码库，本站
 每课都直接导读真实包，示例是通往真码的桥。
 
+## 适合谁 / 怎么学
+
+- **前置**：会写 TypeScript（见到泛型与 `async/await` 不陌生即可），不需要任何框架经验；
+  装好 Node ≥ 22 与 pnpm。想看懂「为什么」与术语对照，代码细节可以按需跳读。
+- **顺序**：按 s01 → s16 读。每课三段——「为什么」讲问题与设计，「跑起来」逐文件走读
+  可运行示例，「看真码」导读 dsh 对应包。s02–s14 是复制前进：每课在前一课代码上叠一层，
+  跳读中间课后仍能接上。
+- **节奏**：一课约 30–60 分钟（读文稿 + 跑示例 + 「改两个地方感受一下」）；全部离线可跑，
+  不需要 `DEEPSEEK_API_KEY`。
+- **卡住了**：先跑 `pnpm run check` 确认环境（测试、逐课 smoke、站点构建一次过）；
+  仍有问题去 [GitHub Issues](https://github.com/Lotus-7/learn-deepseek-harness/issues) 提问。
+
 ## 怎么跑课程
 
 ```sh
 pnpm install
 pnpm --filter @learn-dsh/s01-min-loop dev   # 任意一课，无需 API key
-pnpm test                                    # 全部课程的 smoke 测试
+pnpm test                                    # 全部单元与集成测试
+pnpm run smoke:lessons                       # 逐课验证公开 dev 入口
 ```
 
 ## 版本锚定

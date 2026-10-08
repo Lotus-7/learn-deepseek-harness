@@ -2,11 +2,7 @@ id: s10
 stage: 4
 slug: sandbox
 title: sandbox：沙箱与统一执行世界——本地一键换远程
-idea: fs 与 subprocess 共享一个部署身份：ExecutionWorld 接口（extends s09 的 FsService +
-  spawn）统一两张面。 LocalWorld（真磁盘 + 真 child_process，命令白名单在 fork 之前拒绝并回喂）与
-  SandboxWorld（进程内虚拟 世界：复用 s09 RemoteFs 当围栏 FS + 虚拟命令解释器
-  echo/cat/wc，路径围栏在解释之前拒绝）。 run_command 工具只依赖接口，换世界零改动；同一脚本两世界事件序列同形、执行特征不同 （真进程
-  vs 零进程）；拒绝是带码回喂（退出码是结果、策略拒绝是错误），模型换安全路线重试。
+idea: 检验标准不是「命令能跑」，是「换一个世界，跑命令的和管文件的是同一个部署，而工具一个字不用改」。
 lines: 2967
 tools: 14
 dsh:

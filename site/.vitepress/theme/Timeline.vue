@@ -17,6 +17,9 @@ interface LessonMeta {
 // 用 Vite 的 BASE_URL（构建期内联）：useData().base 在 SSR 构建阶段是 undefined，会炸掉整页渲染。
 const withBase = (href: string): string => import.meta.env.BASE_URL.replace(/\/$/, '') + href
 
+// dsh label 是「路径 + 括注」结构：chip 只显示路径部分，完整导读括注放 title 悬浮提示。
+const chipLabel = (label: string): string => label.split(/[（(]/)[0]?.trim() || label
+
 const stages: { id: number; name: string; note: string }[] = [
   { id: 1, name: '阶段一 · 最小循环', note: '纯手写，零框架' },
   { id: 2, name: '阶段二 · 可控与可恢复', note: '权限、恢复、压缩' },
@@ -56,10 +59,11 @@ const maxLines = Math.max(...(lessons as LessonMeta[]).map((l) => l.lines), 1)
             v-for="d in lesson.dsh"
             :key="d.url"
             :href="d.url"
+            :title="d.label"
             class="chip"
             @click.stop
             rel="noopener"
-          >dsh · {{ d.label }}</a>
+          >dsh · {{ chipLabel(d.label) }}</a>
         </div>
         <div class="bar" :style="{ width: `${Math.max((lesson.lines / maxLines) * 100, 4)}%` }" />
       </div>

@@ -2,19 +2,7 @@ id: s13
 stage: 4
 slug: persistence
 title: 'persistence：持久化——恢复、分叉、回放'
-idea: 持久化兑现 s03 的地基：append-only 事件日志逐行落 JSONL 文件（头行记元数据与 fork 谱系，seq 即行号减一），
-  重放、分叉、回放三项能力全部从「状态是投影」这一个事实免费得到。写入时机选「落账即持久」——durable 插件监听 session/event 同步
-  write+fsync，append 返回时事件已穿过页缓存，「模型看得见 ⟺ 已落账 ⟺ 已落盘」同时成立 （如实对照真码取舍：生产版用有界批缓冲
-  write-behind（默认 200ms）+ session/flush 显式屏障 + checkpoint-policy 在「下一个模型请求前 /
-  顶层工具副作用前 / pre-step 边界」主动要屏障——吞吐换时机，教学版没有吞吐压力， 选最强时机语义换确定性）。resume
-  只凭文件：重放事件重建日志与派生历史（逐事件一致、estimateTokens 全等， 测试钉住），seq 与 turn 续接不重置。坏行分流与 dsh
-  两个后端共享同一条线：最后一个 turn/end 之前是 committed 区（坏 JSON / seq
-  断裂拒绝打开、报位置与期望）；之后是崩溃尾巴（写到一半的残迹截到最近完整事件并响亮警告； 完整但未闭合的 turn 保留并合成收尾——未配对调用补
-  tool/result + turn/end(aborted)，与 interruptedTurnClosers 的
-  TOOL_OUTCOME_UNKNOWN 同一立场：结果未知，有副作用先核对）。fork 从 turn/end 边界分出支线文件：前缀逐事件复制、
-  parentSession/seedLength 谱系落头，之后两边独立增长互不可见（OPEN_TURN 拒绝与 SessionStore.fork
-  同款）。 replay 是日志的又一个纯函数投影。教学版省略：并发写（真码 per-id promise 链串行化）、zstd 压缩、目录布局、
-  schema 迁移（SQLite SCHEMA_VERSION 单调、不匹配拒绝不迁移）。
+idea: 会话的持久化不需要「保存状态」——日志本来就是事件流，把它逐行写进文件，恢复、分叉、回放三项能力全部免费。
 lines: 4916
 tools: 19
 dsh:
